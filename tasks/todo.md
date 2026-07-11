@@ -1,10 +1,33 @@
+# FocusReef — Iteration 3: progression, new species, decorations, dialog polish
+
+User decisions (2026-07-12): XP with streak multiplier (level never drops); new
+fish varieties unlocked by level; decorations placed by dragging inside a
+placement mode with Confirm/Cancel, repositionable from the tank detail dialog.
+
+- [ ] 1. Progression core: ProgressionCalculator (pure, XP from history with
+      streak multiplier), Progression model, ProgressionRepository, GameConfig
+      constants, mock streak tail, unit tests
+- [ ] 2. Six new fish species (Neon 2, Angelfish 3, Betta 4, Reef shark 5,
+      Lionfish 7, Orca 9) + level gating: unlockLevel, PurchaseResult.LevelTooLow,
+      locked store cards, LevelProgressRow in Store hero + Stats
+- [ ] 3. Dialog foundation: FocusReefDialog + DialogListRow; rebuild
+      TankPickerDialog (generic tankEnabled/supportingText) and TankDetailDialog
+- [ ] 4. Decorations data layer: DecorationSpecies catalog (Shell/Rock/Kelp
+      floor; Bubbler/Jellyfish floating; Chest floor), Room v2 + migration,
+      buyDecoration (commits at buy time, default position), PlacementMath + tests
+- [ ] 5. Decorations UI: DecorationSprite, TankSprite renders decorations,
+      store section, drag-to-place overlay, reposition from tank detail
+- [ ] 6. Verify build + tests, logical commits, push
+
+---
+
 # FocusReef — Iteration 2: tank management + fish animation
 
 - [x] Store: choose destination tank when buying a fish (TankPickerDialog; skipped when only one tank has room)
 - [x] Tank detail dialog on tap: per-species counts + Move action
 - [x] Move fish between tanks (AquariumRepository.moveFish, validated: destination space, stale-UI guard)
 - [x] Fish wander the tank (Animatable x/y per fish, random targets, direction-aware flip)
-- [ ] Verify build + tests, commit, push
+- [x] Verify build + tests, commit, push (verified 2026-07-12: assembleDebug + testDebugUnitTest green)
 
 ---
 

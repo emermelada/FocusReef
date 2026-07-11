@@ -31,4 +31,27 @@ object GameConfig {
 
     /** Price of a large fish (5 slots), in tokens. */
     const val LARGE_FISH_PRICE_TOKENS: Long = 18L
+
+    // Progression (XP, streak multiplier, levels) -----------------------------
+
+    /** Base XP granted per completed focus block, before the streak multiplier. */
+    const val XP_PER_FOCUS_BLOCK: Long = 10L
+
+    /** Multiplier applied while the streak is below [STREAK_TIER_2_DAYS], in percent. */
+    const val BASE_MULTIPLIER_PERCENT: Int = 100
+
+    /** Streak length (days) at which the second multiplier tier kicks in. */
+    const val STREAK_TIER_2_DAYS: Int = 3
+
+    /** XP multiplier for streaks of at least [STREAK_TIER_2_DAYS], in percent. */
+    const val STREAK_TIER_2_PERCENT: Int = 150
+
+    /** Streak length (days) at which the top multiplier tier kicks in. */
+    const val STREAK_TIER_3_DAYS: Int = 7
+
+    /** XP multiplier for streaks of at least [STREAK_TIER_3_DAYS], in percent. */
+    const val STREAK_TIER_3_PERCENT: Int = 200
+
+    /** Total XP required to be level n is `LEVEL_XP_FACTOR * (n - 1)^2`. */
+    const val LEVEL_XP_FACTOR: Long = 100L
 }

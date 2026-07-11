@@ -4,6 +4,8 @@ import com.emermeladas.focusreef.data.repositories.AquariumRepository
 import com.emermeladas.focusreef.data.repositories.AquariumRepositoryImpl
 import com.emermeladas.focusreef.data.repositories.FocusHistoryRepository
 import com.emermeladas.focusreef.data.repositories.MockFocusHistoryRepository
+import com.emermeladas.focusreef.data.repositories.ProgressionRepository
+import com.emermeladas.focusreef.data.repositories.ProgressionRepositoryImpl
 import com.emermeladas.focusreef.data.repositories.WalletRepository
 import com.emermeladas.focusreef.data.repositories.WalletRepositoryImpl
 import dagger.Binds
@@ -41,4 +43,10 @@ abstract class RepositoryModule {
     abstract fun bindWalletRepository(
         impl: WalletRepositoryImpl,
     ): WalletRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProgressionRepository(
+        impl: ProgressionRepositoryImpl,
+    ): ProgressionRepository
 }

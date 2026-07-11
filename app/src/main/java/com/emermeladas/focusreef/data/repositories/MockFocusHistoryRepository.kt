@@ -39,7 +39,11 @@ class MockFocusHistoryRepository @Inject constructor() : FocusHistoryRepository 
 
         for (daysAgo in HISTORY_DAYS downTo 0) {
             val day = today.minusDays(daysAgo.toLong())
-            val isRestDay = random.nextInt(100) < REST_DAY_PERCENT
+            // Always consume the draw so history before the tail stays identical,
+            // then force the last few days active so the streak UI has something
+            // to show when demoing.
+            val restDayDraw = random.nextInt(100) < REST_DAY_PERCENT
+            val isRestDay = restDayDraw && daysAgo > FORCED_ACTIVE_TAIL_DAYS
             if (isRestDay) continue
 
             val blockCount = 1 + random.nextInt(MAX_BLOCKS_PER_DAY)
@@ -62,5 +66,8 @@ class MockFocusHistoryRepository @Inject constructor() : FocusHistoryRepository 
         const val HISTORY_DAYS = 365
         const val REST_DAY_PERCENT = 20
         const val MAX_BLOCKS_PER_DAY = 8
+
+        /** The most recent days are never rest days, so a current streak exists. */
+        const val FORCED_ACTIVE_TAIL_DAYS = 5
     }
 }
