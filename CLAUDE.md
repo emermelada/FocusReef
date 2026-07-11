@@ -22,12 +22,13 @@ Mirrors the structure and stack of the reference project [ArtCenter](https://git
 
 - **Language:** Kotlin
 - **UI:** Jetpack Compose (Material 3), single-activity
+- **Build:** AGP 9.2.1 (built-in Kotlin 2.2.10), Gradle 9.4.1, compileSdk 36, minSdk 26 (java.time without desugaring). KSP for Hilt/Room — Hilt must stay ≥ 2.59.2 for AGP 9 compatibility.
 - **Architecture:** MVVM — one `Screen` composable + one `ViewModel` + one `UiState` per feature
 - **DI:** Hilt
 - **Networking:** Retrofit (NAS REST API) — Gson converter
-- **Local persistence:** Room (owned fish, tanks, spent tokens) + DataStore (simple preferences)
+- **Local persistence:** Room (owned fish, tanks, purchase ledger). DataStore only when preferences appear.
 - **Navigation:** Navigation Compose with a bottom navigation bar
-- **Images:** Coil (for when real sprites arrive)
+- **Images:** Coil (add the dependency when real sprites arrive — not before)
 - **Async:** Kotlin Coroutines + `StateFlow`
 
 ## Data Architecture
@@ -43,10 +44,10 @@ availableTokens = tokensEarned(from NAS focus blocks) − tokensSpent(local Room
 
 ## Package / Folder Structure
 
-Follow the ArtCenter layout. Root package: `com.javier.focusreef`.
+Follow the ArtCenter layout. Root package: `com.emermeladas.focusreef`.
 
 ```
-app/src/main/java/com/javier/focusreef/
+app/src/main/java/com/emermeladas/focusreef/
 ├── data/
 │   ├── model/          # Domain models: FocusBlock, FishSpecies, Fish, Tank, Wallet
 │   ├── remote/         # NAS API: Retrofit service, DTOs, mock implementation
