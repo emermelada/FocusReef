@@ -47,10 +47,10 @@ class StoreViewModel @Inject constructor(
     @get:StringRes
     val userMessageRes: StateFlow<Int?> = _userMessageRes.asStateFlow()
 
-    /** Attempts to buy a fish of [species]. */
-    fun buyFish(species: FishSpecies) {
+    /** Attempts to buy a fish of [species] and place it in tank [tankId]. */
+    fun buyFish(species: FishSpecies, tankId: Long) {
         viewModelScope.launch {
-            _userMessageRes.value = aquariumRepository.buyFish(species).toMessageRes()
+            _userMessageRes.value = aquariumRepository.buyFish(species, tankId).toMessageRes()
         }
     }
 

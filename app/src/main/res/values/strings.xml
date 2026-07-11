@@ -22,8 +22,21 @@
     <string name="stats_monthly_breakdown">Months of %1$d</string>
     <string name="stats_yearly_breakdown">Per year</string>
 
+    <!-- Tank detail dialog -->
+    <string name="tank_detail_close">Close</string>
+    <string name="tank_detail_empty">No fish in this tank yet</string>
+    <string name="tank_detail_move">Move</string>
+    <string name="tank_species_count">%1$s × %2$d</string>
+    <string name="tank_free_slots">%1$d free slots</string>
+    <string name="move_fish_title">Move to which tank?</string>
+    <string name="tank_msg_moved">Fish moved!</string>
+    <string name="tank_msg_move_no_space">Not enough free slots in that tank</string>
+    <string name="tank_msg_nothing_to_move">That fish is no longer there</string>
+    <string name="picker_cancel">Cancel</string>
+
     <!-- Store screen -->
     <string name="store_title">Fish store</string>
+    <string name="store_choose_tank">Where should it live?</string>
     <string name="store_balance">%1$d tokens</string>
     <string name="store_balance_label">Your balance</string>
     <string name="store_price">%1$d tokens</string>

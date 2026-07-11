@@ -9,6 +9,7 @@ import com.emermeladas.focusreef.data.local.entities.PurchaseEntity
 import com.emermeladas.focusreef.data.local.entities.TankEntity
 import com.emermeladas.focusreef.data.model.Fish
 import com.emermeladas.focusreef.data.model.FishSpecies
+import com.emermeladas.focusreef.data.model.MoveResult
 import com.emermeladas.focusreef.data.model.PurchaseResult
 import com.emermeladas.focusreef.data.model.Tank
 import com.emermeladas.focusreef.utils.GameConfig
@@ -30,14 +31,14 @@ interface AquariumRepository {
     /** All tanks with their fish, as a reactive stream. */
     fun observeTanks(): Flow<List<Tank>>
 
-    /**
-     * Buys a fish of [species], placing it in the first tank with enough free
-     * slots.
-     */
-    suspend fun buyFish(species: FishSpecies): PurchaseResult
+    /** Buys a fish of [species] and places it in the tank chosen by the player. */
+    suspend fun buyFish(species: FishSpecies, tankId: Long): PurchaseResult
 
     /** Buys an additional empty tank. */
     suspend fun buyTank(): PurchaseResult
+
+    /** Moves one fish of [species] from one tank to another. */
+    suspend fun moveFish(species: FishSpecies, fromTankId: Long, toTankId: Long): MoveResult
 }
 
 /**
@@ -67,11 +68,12 @@ class AquariumRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun buyFish(species: FishSpecies): PurchaseResult {
+    override suspend fun buyFish(species: FishSpecies, tankId: Long): PurchaseResult {
         val wallet = walletRepository.observeWallet().first()
         if (!wallet.canAfford(species.priceTokens)) return PurchaseResult.NotEnoughTokens
 
-        val targetTank = observeTanks().first().firstOrNull { it.hasRoomFor(species) }
+        val targetTank = observeTanks().first()
+            .firstOrNull { it.id == tankId && it.hasRoomFor(species) }
             ?: return PurchaseResult.NotEnoughSpace
 
         // Fish + ledger entry must land together, or tokens could be lost.
@@ -92,6 +94,24 @@ class AquariumRepositoryImpl @Inject constructor(
             purchaseDao.insert(purchaseOf("Tank $tankNumber", GameConfig.TANK_PRICE_TOKENS))
         }
         return PurchaseResult.Success
+    }
+
+    override suspend fun moveFish(
+        species: FishSpecies,
+        fromTankId: Long,
+        toTankId: Long,
+    ): MoveResult {
+        if (fromTankId == toTankId) return MoveResult.Success
+
+        val destination = observeTanks().first().firstOrNull { it.id == toTankId }
+        if (destination == null || !destination.hasRoomFor(species)) {
+            return MoveResult.NotEnoughSpace
+        }
+
+        val fish = aquariumDao.findFishInTank(fromTankId, species.name)
+            ?: return MoveResult.NothingToMove
+        aquariumDao.updateFishTank(fishId = fish.id, toTankId = toTankId)
+        return MoveResult.Success
     }
 
     /** Builds a ledger entry timestamped now. */

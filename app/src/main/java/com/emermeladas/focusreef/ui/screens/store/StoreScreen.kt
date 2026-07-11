@@ -19,7 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.emermeladas.focusreef.R
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.ui.components.FishSprite
+import com.emermeladas.focusreef.ui.components.TankPickerDialog
 import com.emermeladas.focusreef.utils.GameConfig
 
 /**
@@ -41,6 +44,9 @@ fun StoreScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val messageRes by viewModel.userMessageRes.collectAsStateWithLifecycle()
+
+    // Species waiting for the player to choose a destination tank.
+    var speciesToBuy by remember { mutableStateOf<FishSpecies?>(null) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -74,7 +80,16 @@ fun StoreScreen(
                     FishStoreItem(
                         species = species,
                         enabled = uiState.canBuyFish(species),
-                        onBuy = { viewModel.buyFish(species) },
+                        onBuy = {
+                            // With a single tank there is nothing to choose;
+                            // otherwise ask where the fish should live.
+                            val tanksWithRoom = uiState.tanks.filter { it.hasRoomFor(species) }
+                            if (uiState.tanks.size == 1 && tanksWithRoom.size == 1) {
+                                viewModel.buyFish(species, tanksWithRoom.first().id)
+                            } else {
+                                speciesToBuy = species
+                            }
+                        },
                     )
                 }
             }
@@ -91,6 +106,20 @@ fun StoreScreen(
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter),
+        )
+    }
+
+    // Tank chooser for the pending fish purchase.
+    speciesToBuy?.let { species ->
+        TankPickerDialog(
+            title = stringResource(R.string.store_choose_tank),
+            tanks = uiState.tanks,
+            requiredSlots = species.slots,
+            onPick = { tank ->
+                viewModel.buyFish(species, tank.id)
+                speciesToBuy = null
+            },
+            onDismiss = { speciesToBuy = null },
         )
     }
 }

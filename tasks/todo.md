@@ -1,3 +1,13 @@
+# FocusReef — Iteration 2: tank management + fish animation
+
+- [x] Store: choose destination tank when buying a fish (TankPickerDialog; skipped when only one tank has room)
+- [x] Tank detail dialog on tap: per-species counts + Move action
+- [x] Move fish between tanks (AquariumRepository.moveFish, validated: destination space, stale-UI guard)
+- [x] Fish wander the tank (Animatable x/y per fish, random targets, direction-aware flip)
+- [ ] Verify build + tests, commit, push
+
+---
+
 # FocusReef — Initial app development
 
 ## Plan

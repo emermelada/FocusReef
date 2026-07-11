@@ -28,4 +28,12 @@ interface AquariumDao {
     /** Inserts a new fish and returns its generated id. */
     @Insert
     suspend fun insertFish(fish: FishEntity): Long
+
+    /** First fish of [speciesName] living in [tankId], or null if none. */
+    @Query("SELECT * FROM fish WHERE tankId = :tankId AND speciesName = :speciesName ORDER BY id LIMIT 1")
+    suspend fun findFishInTank(tankId: Long, speciesName: String): FishEntity?
+
+    /** Relocates one fish to another tank. */
+    @Query("UPDATE fish SET tankId = :toTankId WHERE id = :fishId")
+    suspend fun updateFishTank(fishId: Long, toTankId: Long)
 }
