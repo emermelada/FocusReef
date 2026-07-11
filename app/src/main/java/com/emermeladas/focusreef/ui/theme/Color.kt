@@ -44,6 +44,17 @@ val WaterBottom = Color(0xFF08476C)
 /** Sand strip at the bottom of the tank. */
 val TankSand = Color(0xFFE3CE97)
 
+// ---- Token coin (used by TokenIcon) -----------------------------------------
+
+/** Coin face. */
+val TokenGold = Color(0xFFE6A817)
+
+/** Coin rim/border. */
+val TokenGoldDark = Color(0xFFB07B0A)
+
+/** Coin inner highlight. */
+val TokenGoldLight = Color(0xFFF7CC55)
+
 // ---- Placeholder fish colors ------------------------------------------------
 
 /**

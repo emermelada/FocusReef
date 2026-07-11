@@ -18,9 +18,12 @@
     <string name="stats_this_year">This year</string>
     <string name="stats_all_time">All time</string>
     <string name="stats_focus_blocks">%1$d focus blocks</string>
-    <string name="stats_weekly_breakdown">Last 7 days</string>
-    <string name="stats_monthly_breakdown">Months of %1$d</string>
-    <string name="stats_yearly_breakdown">Per year</string>
+    <string name="stats_tab_week">Week</string>
+    <string name="stats_tab_year">Year</string>
+    <string name="stats_tab_all_time">All time</string>
+    <string name="stats_chart_last_7_days">Last 7 days</string>
+    <string name="stats_chart_months">Month by month</string>
+    <string name="stats_chart_years">Year by year</string>
 
     <!-- Tank detail dialog -->
     <string name="tank_detail_close">Close</string>

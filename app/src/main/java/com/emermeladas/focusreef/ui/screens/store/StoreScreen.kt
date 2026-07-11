@@ -1,5 +1,6 @@
 package com.emermeladas.focusreef.ui.screens.store
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,11 +8,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -24,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,11 +39,12 @@ import com.emermeladas.focusreef.R
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.ui.components.FishSprite
 import com.emermeladas.focusreef.ui.components.TankPickerDialog
+import com.emermeladas.focusreef.ui.components.TokenIcon
 import com.emermeladas.focusreef.utils.GameConfig
 
 /**
- * Window 3 — the fish store: token balance on top, then the three fish
- * species and additional tanks.
+ * Window 3 — the fish store: a token-balance hero, the three fish as a
+ * card grid, and additional tanks.
  */
 @Composable
 fun StoreScreen(
@@ -60,42 +68,50 @@ fun StoreScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
                     text = stringResource(R.string.store_title),
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
 
-            item { BalanceCard(tokens = uiState.wallet?.availableTokens) }
-
-            item { SectionHeader(stringResource(R.string.store_section_fish)) }
-            FishSpecies.entries.forEach { species ->
-                item(key = species.name) {
-                    FishStoreItem(
-                        species = species,
-                        enabled = uiState.canBuyFish(species),
-                        onBuy = {
-                            // With a single tank there is nothing to choose;
-                            // otherwise ask where the fish should live.
-                            val tanksWithRoom = uiState.tanks.filter { it.hasRoomFor(species) }
-                            if (uiState.tanks.size == 1 && tanksWithRoom.size == 1) {
-                                viewModel.buyFish(species, tanksWithRoom.first().id)
-                            } else {
-                                speciesToBuy = species
-                            }
-                        },
-                    )
-                }
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                BalanceHero(tokens = uiState.wallet?.availableTokens)
             }
 
-            item { SectionHeader(stringResource(R.string.store_section_tanks)) }
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionHeader(stringResource(R.string.store_section_fish))
+            }
+
+            items(FishSpecies.entries, key = { it.name }) { species ->
+                FishCard(
+                    species = species,
+                    enabled = uiState.canBuyFish(species),
+                    onBuy = {
+                        // With a single tank there is nothing to choose;
+                        // otherwise ask where the fish should live.
+                        val tanksWithRoom = uiState.tanks.filter { it.hasRoomFor(species) }
+                        if (uiState.tanks.size == 1 && tanksWithRoom.size == 1) {
+                            viewModel.buyFish(species, tanksWithRoom.first().id)
+                        } else {
+                            speciesToBuy = species
+                        }
+                    },
+                )
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionHeader(stringResource(R.string.store_section_tanks))
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 TankStoreItem(
                     enabled = uiState.canBuyTank,
                     onBuy = viewModel::buyTank,
@@ -125,63 +141,88 @@ fun StoreScreen(
 }
 
 /**
- * Prominent card showing the spendable token balance.
+ * Prominent balance card: label, big token amount, and the coin.
  */
 @Composable
-private fun BalanceCard(tokens: Long?) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = stringResource(R.string.store_balance_label),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = tokens?.let { stringResource(R.string.store_balance, it) }
-                    ?: stringResource(R.string.loading),
-                style = MaterialTheme.typography.headlineMedium,
-            )
+private fun BalanceHero(tokens: Long?) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.store_balance_label),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Text(
+                    text = tokens?.let { stringResource(R.string.store_balance, it) }
+                        ?: stringResource(R.string.loading),
+                    style = MaterialTheme.typography.displaySmall,
+                )
+            }
+            TokenIcon(size = 44.dp)
         }
     }
 }
 
 /**
- * One purchasable fish: placeholder sprite, name, slots, price, Buy button.
+ * One purchasable fish as a shop card: a water-tinted showcase with the
+ * sprite, name, slot size and a price button.
  */
 @Composable
-private fun FishStoreItem(
+private fun FishCard(
     species: FishSpecies,
     enabled: Boolean,
     onBuy: () -> Unit,
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
+    Card {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            // Fixed-size box so rows align regardless of sprite size.
-            Box(modifier = Modifier.size(64.dp), contentAlignment = Alignment.Center) {
+            // Sprite showcase; same height for all species so cards align.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(84.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
+            ) {
                 FishSprite(species)
             }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(species.displayName, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = slotsText(species.slots) + " · " +
-                        stringResource(R.string.store_price, species.priceTokens),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Button(onClick = onBuy, enabled = enabled) {
-                Text(stringResource(R.string.store_buy))
+            Text(
+                text = species.displayName,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = slotsText(species.slots),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Button(
+                onClick = onBuy,
+                enabled = enabled,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.store_price, species.priceTokens))
             }
         }
     }
 }
 
 /**
- * The purchasable extra tank.
+ * The purchasable extra tank (full-width card).
  */
 @Composable
 private fun TankStoreItem(
@@ -203,13 +244,13 @@ private fun TankStoreItem(
                     text = stringResource(
                         R.string.store_item_tank_description,
                         GameConfig.TANK_CAPACITY_SLOTS,
-                    ) + " · " + stringResource(R.string.store_price, GameConfig.TANK_PRICE_TOKENS),
-                    style = MaterialTheme.typography.bodyMedium,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Button(onClick = onBuy, enabled = enabled) {
-                Text(stringResource(R.string.store_buy))
+                Text(stringResource(R.string.store_price, GameConfig.TANK_PRICE_TOKENS))
             }
         }
     }
