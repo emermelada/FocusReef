@@ -33,6 +33,14 @@ fun FishSprite(
         val bodyColor = fishColorFor(species)
         // Body: an ellipse over the left ~72% of the canvas.
         val bodyWidth = size.width * 0.72f
+        // Dorsal fin peeking above the body.
+        val fin = Path().apply {
+            moveTo(bodyWidth * 0.42f, size.height * 0.2f)
+            lineTo(bodyWidth * 0.62f, 0f)
+            lineTo(bodyWidth * 0.78f, size.height * 0.28f)
+            close()
+        }
+        drawPath(path = fin, color = bodyColor)
         drawOval(
             color = bodyColor,
             topLeft = Offset(0f, size.height * 0.12f),

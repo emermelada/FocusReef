@@ -103,6 +103,16 @@ Real sprites are being made by the user. Until then:
 - Placeholders are simple colored shapes sized by species (small/medium/large) — distinct color per species.
 - When real sprites arrive, only these two components change. Screens must never draw fish/tank art directly.
 
+## Design System
+
+Defined entirely in `ui/theme/` — change it there, never inline in screens.
+
+- **Color:** complete Material 3 tonal scheme (every role, light + dark) seeded from ocean blue `#00658E`; slate-blue secondary, coral tertiary. Non-scheme brand colors (tank water, sand, token gold, fish placeholders) also live in `Color.kt`. Dynamic color is deliberately disabled.
+- **Type:** two bundled variable fonts — **Sora** for display/headline/title, **Inter** for body/label — mapped over the full M3 scale in `Type.kt`.
+- **Shape:** rounded scale (6→28dp) in `Theme.kt`.
+- **Charts:** single-hue (primary) column bars, tap-to-reveal values, baseline hairline in outlineVariant — see `ui/components/ColumnChart.kt`.
+- **Launcher icon:** adaptive vector (fish + waves) in `res/drawable/ic_launcher_*.xml`, consistent with the in-app sprite silhouette.
+
 ## Code Conventions
 
 - **Document everything:** KDoc on all public classes, functions, and properties. Explanatory comments inside non-trivial logic.

@@ -196,7 +196,7 @@ private fun FishCard(
                     .fillMaxWidth()
                     .height(84.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentAlignment = Alignment.Center,
             ) {
                 FishSprite(species)
