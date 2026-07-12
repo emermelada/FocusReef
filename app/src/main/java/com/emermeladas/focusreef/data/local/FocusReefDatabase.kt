@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.emermeladas.focusreef.data.local.daos.AquariumDao
 import com.emermeladas.focusreef.data.local.daos.PurchaseDao
+import com.emermeladas.focusreef.data.local.entities.DecorationEntity
 import com.emermeladas.focusreef.data.local.entities.FishEntity
 import com.emermeladas.focusreef.data.local.entities.PurchaseEntity
 import com.emermeladas.focusreef.data.local.entities.TankEntity
@@ -15,8 +16,13 @@ import com.emermeladas.focusreef.data.local.entities.TankEntity
  * app-side game state: tanks, fish and the purchase ledger.
  */
 @Database(
-    entities = [TankEntity::class, FishEntity::class, PurchaseEntity::class],
-    version = 1,
+    entities = [
+        TankEntity::class,
+        FishEntity::class,
+        PurchaseEntity::class,
+        DecorationEntity::class,
+    ],
+    version = 2,
     exportSchema = false,
 )
 abstract class FocusReefDatabase : RoomDatabase() {

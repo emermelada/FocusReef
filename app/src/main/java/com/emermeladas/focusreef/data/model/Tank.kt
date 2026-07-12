@@ -1,5 +1,7 @@
 package com.emermeladas.focusreef.data.model
 
+import com.emermeladas.focusreef.utils.GameConfig
+
 /**
  * A fish tank owned by the player, together with the fish living in it.
  *
@@ -7,12 +9,14 @@ package com.emermeladas.focusreef.data.model
  * @property name Display name, e.g. "Tank 1".
  * @property capacitySlots Total fish slots in this tank.
  * @property fish The fish currently living in this tank.
+ * @property decorations Decorations placed in this tank (own cap, no fish slots).
  */
 data class Tank(
     val id: Long,
     val name: String,
     val capacitySlots: Int,
     val fish: List<Fish>,
+    val decorations: List<Decoration> = emptyList(),
 ) {
     /** Slots currently occupied by fish (species have different sizes). */
     val usedSlots: Int
@@ -24,4 +28,7 @@ data class Tank(
 
     /** True if a fish of [species] fits in this tank. */
     fun hasRoomFor(species: FishSpecies): Boolean = freeSlots >= species.slots
+
+    /** True if another decoration fits under the per-tank cap. */
+    fun hasRoomForDecoration(): Boolean = decorations.size < GameConfig.TANK_DECORATION_CAP
 }

@@ -71,6 +71,38 @@ object GameConfig {
     /** Level required to buy an orca. */
     const val ORCA_UNLOCK_LEVEL: Int = 9
 
+    // Decorations --------------------------------------------------------------
+
+    /** Maximum decorations one tank can hold (independent of fish slots). */
+    const val TANK_DECORATION_CAP: Int = 6
+
+    /** Price of a seashell (floor), in tokens. */
+    const val SHELL_PRICE_TOKENS: Long = 2L
+
+    /** Price of a rock (floor), in tokens. */
+    const val ROCK_PRICE_TOKENS: Long = 3L
+
+    /** Price of a kelp plant (floor), in tokens. */
+    const val KELP_PRICE_TOKENS: Long = 5L
+
+    /** Price of a bubbler (floating), in tokens. */
+    const val BUBBLER_PRICE_TOKENS: Long = 8L
+
+    /** Level required to buy a bubbler. */
+    const val BUBBLER_UNLOCK_LEVEL: Int = 2
+
+    /** Price of a treasure chest (floor), in tokens. */
+    const val CHEST_PRICE_TOKENS: Long = 12L
+
+    /** Level required to buy a treasure chest. */
+    const val CHEST_UNLOCK_LEVEL: Int = 4
+
+    /** Price of a jellyfish (floating), in tokens. */
+    const val JELLYFISH_PRICE_TOKENS: Long = 15L
+
+    /** Level required to buy a jellyfish. */
+    const val JELLYFISH_UNLOCK_LEVEL: Int = 6
+
     // Progression (XP, streak multiplier, levels) -----------------------------
 
     /** Base XP granted per completed focus block, before the streak multiplier. */

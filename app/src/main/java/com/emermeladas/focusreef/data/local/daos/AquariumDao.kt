@@ -3,6 +3,7 @@ package com.emermeladas.focusreef.data.local.daos
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.emermeladas.focusreef.data.local.entities.DecorationEntity
 import com.emermeladas.focusreef.data.local.entities.FishEntity
 import com.emermeladas.focusreef.data.local.entities.TankEntity
 import kotlinx.coroutines.flow.Flow
@@ -36,4 +37,16 @@ interface AquariumDao {
     /** Relocates one fish to another tank. */
     @Query("UPDATE fish SET tankId = :toTankId WHERE id = :fishId")
     suspend fun updateFishTank(fishId: Long, toTankId: Long)
+
+    /** All placed decorations, oldest first, as a reactive stream. */
+    @Query("SELECT * FROM decorations ORDER BY id")
+    fun observeDecorations(): Flow<List<DecorationEntity>>
+
+    /** Inserts a new decoration and returns its generated id. */
+    @Insert
+    suspend fun insertDecoration(decoration: DecorationEntity): Long
+
+    /** Moves a placed decoration to a new position inside its tank. */
+    @Query("UPDATE decorations SET xBias = :xBias, yBias = :yBias WHERE id = :decorationId")
+    suspend fun updateDecorationPosition(decorationId: Long, xBias: Float, yBias: Float)
 }
