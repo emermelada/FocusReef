@@ -55,6 +55,7 @@
     <string name="store_msg_no_space">No free slots — buy a new tank first</string>
     <string name="store_msg_level_too_low">Keep your streak going to unlock this!</string>
     <string name="store_locked_level">Unlocks at level %1$d</string>
+    <string name="tank_species_count_short">× %1$d</string>
 
     <!-- Progression -->
     <string name="level_label">Level %1$d</string>

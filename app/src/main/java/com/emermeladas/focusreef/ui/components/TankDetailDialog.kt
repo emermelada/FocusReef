@@ -1,13 +1,12 @@
 package com.emermeladas.focusreef.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,36 +37,32 @@ fun TankDetailDialog(
     // Count fish per species, keeping the enum's small→large display order.
     val counts = tank.fish.groupingBy { it.species }.eachCount()
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(tank.name) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    FocusReefDialog(
+        title = tank.name,
+        onDismiss = onDismiss,
+        buttons = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.tank_detail_close))
+            }
+        },
+    ) {
+        Column {
+            SlotUsageStrip(tank)
+
+            if (tank.fish.isEmpty()) {
                 Text(
-                    text = stringResource(
-                        R.string.tank_slots_used,
-                        tank.usedSlots,
-                        tank.capacitySlots,
-                    ),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 8.dp),
+                    text = stringResource(R.string.tank_detail_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 8.dp),
                 )
+            }
 
-                if (tank.fish.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.tank_detail_empty),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-
-                FishSpecies.entries.forEach { species ->
-                    val count = counts[species] ?: return@forEach
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
+            FishSpecies.entries.forEach { species ->
+                val count = counts[species] ?: return@forEach
+                DialogListRow(
+                    headline = species.displayName,
+                    supporting = stringResource(R.string.tank_species_count_short, count),
+                    leading = {
                         // Fixed-size box so rows align across sprite sizes.
                         Box(
                             modifier = Modifier.size(56.dp),
@@ -75,29 +70,41 @@ fun TankDetailDialog(
                         ) {
                             FishSprite(species)
                         }
-                        Text(
-                            text = stringResource(
-                                R.string.tank_species_count,
-                                species.displayName,
-                                count,
-                            ),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f),
-                        )
+                    },
+                    trailing = {
                         TextButton(
                             onClick = { onMoveSpecies(species) },
                             enabled = canMoveSpecies(species),
                         ) {
                             Text(stringResource(R.string.tank_detail_move))
                         }
-                    }
-                }
+                    },
+                )
             }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.tank_detail_close))
-            }
-        },
-    )
+        }
+    }
+}
+
+/**
+ * Labeled capacity bar: "n/24 slots" over a thin progress strip.
+ */
+@Composable
+private fun SlotUsageStrip(tank: Tank) {
+    Column(modifier = Modifier.padding(bottom = 8.dp)) {
+        Text(
+            text = stringResource(R.string.tank_slots_used, tank.usedSlots, tank.capacitySlots),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 4.dp),
+        )
+        LinearProgressIndicator(
+            progress = {
+                if (tank.capacitySlots == 0) 0f
+                else tank.usedSlots.toFloat() / tank.capacitySlots
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(6.dp),
+        )
+    }
 }

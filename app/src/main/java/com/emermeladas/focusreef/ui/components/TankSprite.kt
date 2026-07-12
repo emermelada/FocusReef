@@ -53,6 +53,7 @@ private const val BIAS_RANGE_Y = 0.72f
 fun TankSprite(
     tank: Tank,
     modifier: Modifier = Modifier,
+    showContents: Boolean = true,
 ) {
     Box(
         modifier = modifier
@@ -84,8 +85,12 @@ fun TankSprite(
                 .background(TankSand.copy(alpha = 0.85f)),
         )
 
-        tank.fish.forEach { fish ->
-            WanderingFish(fish)
+        // Thumbnails (e.g. tank-picker rows) skip the fish: fixed-dp sprites
+        // would overflow a tiny tank.
+        if (showContents) {
+            tank.fish.forEach { fish ->
+                WanderingFish(fish)
+            }
         }
     }
 }

@@ -114,7 +114,8 @@ fun TanksScreen(
         TankPickerDialog(
             title = stringResource(R.string.move_fish_title),
             tanks = uiState.tanks.filter { it.id != selectedTank.id },
-            requiredSlots = movingSpecies.slots,
+            tankEnabled = { it.hasRoomFor(movingSpecies) },
+            supportingText = { stringResource(R.string.tank_free_slots, it.freeSlots) },
             onPick = { destination ->
                 viewModel.moveFish(movingSpecies, selectedTank.id, destination.id)
                 speciesToMove = null

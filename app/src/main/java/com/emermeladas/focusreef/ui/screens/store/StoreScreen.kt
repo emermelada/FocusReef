@@ -140,7 +140,8 @@ fun StoreScreen(
         TankPickerDialog(
             title = stringResource(R.string.store_choose_tank),
             tanks = uiState.tanks,
-            requiredSlots = species.slots,
+            tankEnabled = { it.hasRoomFor(species) },
+            supportingText = { stringResource(R.string.tank_free_slots, it.freeSlots) },
             onPick = { tank ->
                 viewModel.buyFish(species, tank.id)
                 speciesToBuy = null
