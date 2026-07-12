@@ -16,22 +16,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.emermeladas.focusreef.R
+import com.emermeladas.focusreef.data.model.Decoration
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.data.model.Tank
 
 /**
  * Dialog opened by tapping a tank: shows how many fish of each species live
- * in it, with a Move action per species.
+ * in it (with a Move action per species) and the placed decorations (with a
+ * Move action that reopens placement mode).
  *
  * @param canMoveSpecies Whether any *other* tank has room for that species —
  * decides if the Move button is enabled.
  * @param onMoveSpecies The player wants to move one fish of this species out.
+ * @param onRepositionDecoration The player wants to drag this decoration to a new spot.
  */
 @Composable
 fun TankDetailDialog(
     tank: Tank,
     canMoveSpecies: (FishSpecies) -> Boolean,
     onMoveSpecies: (FishSpecies) -> Unit,
+    onRepositionDecoration: (Decoration) -> Unit,
     onDismiss: () -> Unit,
 ) {
     // Count fish per species, keeping the enum's small→large display order.
@@ -80,6 +84,34 @@ fun TankDetailDialog(
                         }
                     },
                 )
+            }
+
+            if (tank.decorations.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.tank_detail_decorations),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
+                )
+                tank.decorations.forEach { decoration ->
+                    DialogListRow(
+                        headline = decoration.species.displayName,
+                        supporting = null,
+                        leading = {
+                            Box(
+                                modifier = Modifier.size(56.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                DecorationSprite(decoration.species)
+                            }
+                        },
+                        trailing = {
+                            TextButton(onClick = { onRepositionDecoration(decoration) }) {
+                                Text(stringResource(R.string.tank_decoration_move))
+                            }
+                        },
+                    )
+                }
             }
         }
     }

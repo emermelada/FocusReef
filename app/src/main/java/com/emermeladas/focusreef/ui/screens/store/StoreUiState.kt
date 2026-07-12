@@ -1,5 +1,6 @@
 package com.emermeladas.focusreef.ui.screens.store
 
+import com.emermeladas.focusreef.data.model.DecorationSpecies
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.data.model.Progression
 import com.emermeladas.focusreef.data.model.Tank
@@ -29,6 +30,16 @@ data class StoreUiState(
         !isFishLocked(species) &&
             wallet?.canAfford(species.priceTokens) == true &&
             tanks.any { it.hasRoomFor(species) }
+
+    /** True if [species] is still locked behind a level requirement. */
+    fun isDecorationLocked(species: DecorationSpecies): Boolean =
+        (progression?.level ?: 1) < species.unlockLevel
+
+    /** True if the Buy button for decoration [species] should be enabled. */
+    fun canBuyDecoration(species: DecorationSpecies): Boolean =
+        !isDecorationLocked(species) &&
+            wallet?.canAfford(species.priceTokens) == true &&
+            tanks.any { it.hasRoomForDecoration() }
 
     /** True if the Buy button for a new tank should be enabled. */
     val canBuyTank: Boolean

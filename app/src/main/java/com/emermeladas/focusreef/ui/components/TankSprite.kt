@@ -85,9 +85,18 @@ fun TankSprite(
                 .background(TankSand.copy(alpha = 0.85f)),
         )
 
-        // Thumbnails (e.g. tank-picker rows) skip the fish: fixed-dp sprites
-        // would overflow a tiny tank.
+        // Thumbnails (e.g. tank-picker rows) skip the contents: fixed-dp
+        // sprites would overflow a tiny tank.
         if (showContents) {
+            // Decorations first so fish swim in front of them.
+            tank.decorations.forEach { decoration ->
+                DecorationSprite(
+                    species = decoration.species,
+                    modifier = Modifier.align(
+                        BiasAlignment(decoration.xBias, decoration.yBias),
+                    ),
+                )
+            }
             tank.fish.forEach { fish ->
                 WanderingFish(fish)
             }

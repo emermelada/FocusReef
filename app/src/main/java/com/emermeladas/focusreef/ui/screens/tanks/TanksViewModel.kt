@@ -7,6 +7,7 @@ import com.emermeladas.focusreef.R
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.data.model.MoveResult
 import com.emermeladas.focusreef.data.repositories.AquariumRepository
+import com.emermeladas.focusreef.utils.BiasPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,5 +59,16 @@ class TanksViewModel @Inject constructor(
     /** Called by the screen once the message has been displayed. */
     fun onMessageShown() {
         _userMessageRes.value = null
+    }
+
+    /** Persists a decoration's new position after placement mode. */
+    fun repositionDecoration(decorationId: Long, position: BiasPoint) {
+        viewModelScope.launch {
+            aquariumRepository.updateDecorationPosition(
+                decorationId = decorationId,
+                xBias = position.x,
+                yBias = position.y,
+            )
+        }
     }
 }

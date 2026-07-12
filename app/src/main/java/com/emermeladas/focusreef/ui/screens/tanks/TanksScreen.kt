@@ -29,11 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.emermeladas.focusreef.R
+import com.emermeladas.focusreef.data.model.Decoration
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.data.model.Tank
+import com.emermeladas.focusreef.ui.components.DecorationPlacementOverlay
 import com.emermeladas.focusreef.ui.components.TankDetailDialog
 import com.emermeladas.focusreef.ui.components.TankPickerDialog
 import com.emermeladas.focusreef.ui.components.TankSprite
+import com.emermeladas.focusreef.utils.BiasPoint
 
 /**
  * Window 1 — the aquarium: every owned tank with its fish and slot usage.
@@ -51,6 +54,7 @@ fun TanksScreen(
     // Dialog state is pure UI state, so it lives here, not in the ViewModel.
     var selectedTankId by remember { mutableStateOf<Long?>(null) }
     var speciesToMove by remember { mutableStateOf<FishSpecies?>(null) }
+    var placingDecoration by remember { mutableStateOf<Decoration?>(null) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     messageRes?.let { res ->
@@ -98,13 +102,14 @@ fun TanksScreen(
     val selectedTank = uiState.tanks.firstOrNull { it.id == selectedTankId }
     val movingSpecies = speciesToMove
 
-    if (selectedTank != null && movingSpecies == null) {
+    if (selectedTank != null && movingSpecies == null && placingDecoration == null) {
         TankDetailDialog(
             tank = selectedTank,
             canMoveSpecies = { species ->
                 uiState.tanks.any { it.id != selectedTank.id && it.hasRoomFor(species) }
             },
             onMoveSpecies = { speciesToMove = it },
+            onRepositionDecoration = { placingDecoration = it },
             onDismiss = { selectedTankId = null },
         )
     }
@@ -121,6 +126,25 @@ fun TanksScreen(
                 speciesToMove = null
             },
             onDismiss = { speciesToMove = null },
+        )
+    }
+
+    // Placement mode to reposition an already-owned decoration. Cancel keeps
+    // the saved position (nothing was written yet).
+    placingDecoration?.let { decoration ->
+        val tank = uiState.tanks.firstOrNull { it.id == decoration.tankId } ?: return@let
+        DecorationPlacementOverlay(
+            // Hide the decoration being moved or it would render twice.
+            tank = tank.copy(
+                decorations = tank.decorations.filterNot { it.id == decoration.id },
+            ),
+            species = decoration.species,
+            initialPosition = BiasPoint(decoration.xBias, decoration.yBias),
+            onConfirm = { position ->
+                viewModel.repositionDecoration(decoration.id, position)
+                placingDecoration = null
+            },
+            onCancel = { placingDecoration = null },
         )
     }
 }

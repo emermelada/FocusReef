@@ -1,6 +1,7 @@
 package com.emermeladas.focusreef.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import com.emermeladas.focusreef.data.model.DecorationSpecies
 import com.emermeladas.focusreef.data.model.FishSpecies
 
 /*
@@ -130,6 +131,16 @@ val TokenGoldLight = Color(0xFFF7CC55)
  * Species are never identified by color alone — the sprite size already
  * encodes the species, so these hues are just flavor.
  */
+/** Placeholder body color for each decoration until real sprites arrive. */
+fun decorationColorFor(species: DecorationSpecies): Color = when (species) {
+    DecorationSpecies.SHELL -> Color(0xFFEFB8C3)          // pink shell
+    DecorationSpecies.ROCK -> Color(0xFF8B8E93)           // gray rock
+    DecorationSpecies.KELP -> Color(0xFF3E8E4E)           // kelp green
+    DecorationSpecies.BUBBLER -> Color(0xCCFFFFFF)        // white-alpha bubbles
+    DecorationSpecies.TREASURE_CHEST -> Color(0xFF8A5A2B) // chest brown
+    DecorationSpecies.JELLYFISH -> Color(0xFFB9A7E8)      // lavender jelly
+}
+
 fun fishColorFor(species: FishSpecies): Color = when (species) {
     FishSpecies.SMALL -> Color(0xFFF28C28)     // clownfish orange
     FishSpecies.MEDIUM -> Color(0xFF2E9E6B)    // reef green
