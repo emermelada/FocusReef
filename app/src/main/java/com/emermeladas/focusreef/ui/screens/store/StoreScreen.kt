@@ -15,9 +15,12 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -30,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,7 +41,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.emermeladas.focusreef.R
 import com.emermeladas.focusreef.data.model.FishSpecies
+import com.emermeladas.focusreef.data.model.Progression
 import com.emermeladas.focusreef.ui.components.FishSprite
+import com.emermeladas.focusreef.ui.components.LevelProgressRow
 import com.emermeladas.focusreef.ui.components.TankPickerDialog
 import com.emermeladas.focusreef.ui.components.TokenIcon
 import com.emermeladas.focusreef.utils.GameConfig
@@ -83,7 +89,10 @@ fun StoreScreen(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                BalanceHero(tokens = uiState.wallet?.availableTokens)
+                BalanceHero(
+                    tokens = uiState.wallet?.availableTokens,
+                    progression = uiState.progression,
+                )
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -94,6 +103,7 @@ fun StoreScreen(
                 FishCard(
                     species = species,
                     enabled = uiState.canBuyFish(species),
+                    locked = uiState.isFishLocked(species),
                     onBuy = {
                         // With a single tank there is nothing to choose;
                         // otherwise ask where the fish should live.
@@ -141,10 +151,11 @@ fun StoreScreen(
 }
 
 /**
- * Prominent balance card: label, big token amount, and the coin.
+ * Prominent balance card: label, big token amount, the coin, and the player's
+ * level/streak progress (the level lives here because it gates purchases).
  */
 @Composable
-private fun BalanceHero(tokens: Long?) {
+private fun BalanceHero(tokens: Long?, progression: Progression?) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -152,37 +163,45 @@ private fun BalanceHero(tokens: Long?) {
         ),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(18.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Column {
-                Text(
-                    text = stringResource(R.string.store_balance_label),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                Text(
-                    text = tokens?.let { stringResource(R.string.store_balance, it) }
-                        ?: stringResource(R.string.loading),
-                    style = MaterialTheme.typography.displaySmall,
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.store_balance_label),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    Text(
+                        text = tokens?.let { stringResource(R.string.store_balance, it) }
+                            ?: stringResource(R.string.loading),
+                        style = MaterialTheme.typography.displaySmall,
+                    )
+                }
+                TokenIcon(size = 44.dp)
             }
-            TokenIcon(size = 44.dp)
+            progression?.let { LevelProgressRow(it) }
         }
     }
 }
 
 /**
  * One purchasable fish as a shop card: a water-tinted showcase with the
- * sprite, name, slot size and a price button.
+ * sprite, name, slot size and a price button. Locked species render dimmed
+ * with a padlock and the required level instead of the price.
  */
 @Composable
 private fun FishCard(
     species: FishSpecies,
     enabled: Boolean,
+    locked: Boolean,
     onBuy: () -> Unit,
 ) {
     Card {
@@ -199,7 +218,16 @@ private fun FishCard(
                     .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentAlignment = Alignment.Center,
             ) {
-                FishSprite(species)
+                Box(modifier = Modifier.alpha(if (locked) 0.35f else 1f)) {
+                    FishSprite(species)
+                }
+                if (locked) {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                }
             }
             Text(
                 text = species.displayName,
@@ -215,7 +243,13 @@ private fun FishCard(
                 enabled = enabled,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.store_price, species.priceTokens))
+                Text(
+                    text = if (locked) {
+                        stringResource(R.string.store_locked_level, species.unlockLevel)
+                    } else {
+                        stringResource(R.string.store_price, species.priceTokens)
+                    },
+                )
             }
         }
     }

@@ -7,6 +7,7 @@ import com.emermeladas.focusreef.R
 import com.emermeladas.focusreef.data.model.FishSpecies
 import com.emermeladas.focusreef.data.model.PurchaseResult
 import com.emermeladas.focusreef.data.repositories.AquariumRepository
+import com.emermeladas.focusreef.data.repositories.ProgressionRepository
 import com.emermeladas.focusreef.data.repositories.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -28,13 +29,15 @@ import kotlinx.coroutines.launch
 class StoreViewModel @Inject constructor(
     private val aquariumRepository: AquariumRepository,
     walletRepository: WalletRepository,
+    progressionRepository: ProgressionRepository,
 ) : ViewModel() {
 
     val uiState: StateFlow<StoreUiState> = combine(
         walletRepository.observeWallet(),
         aquariumRepository.observeTanks(),
-    ) { wallet, tanks ->
-        StoreUiState(isLoading = false, wallet = wallet, tanks = tanks)
+        progressionRepository.observeProgression(),
+    ) { wallet, tanks, progression ->
+        StoreUiState(isLoading = false, wallet = wallet, tanks = tanks, progression = progression)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -71,5 +74,6 @@ class StoreViewModel @Inject constructor(
         PurchaseResult.Success -> R.string.store_msg_purchased
         PurchaseResult.NotEnoughTokens -> R.string.store_msg_not_enough_tokens
         PurchaseResult.NotEnoughSpace -> R.string.store_msg_no_space
+        is PurchaseResult.LevelTooLow -> R.string.store_msg_level_too_low
     }
 }

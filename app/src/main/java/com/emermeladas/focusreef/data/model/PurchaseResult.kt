@@ -16,4 +16,7 @@ sealed interface PurchaseResult {
 
     /** No tank has enough free slots for the requested fish. */
     data object NotEnoughSpace : PurchaseResult
+
+    /** The player's level is below the item's unlock level. */
+    data class LevelTooLow(val requiredLevel: Int) : PurchaseResult
 }

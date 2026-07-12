@@ -50,6 +50,7 @@ class AquariumRepositoryImpl @Inject constructor(
     private val aquariumDao: AquariumDao,
     private val purchaseDao: PurchaseDao,
     private val walletRepository: WalletRepository,
+    private val progressionRepository: ProgressionRepository,
 ) : AquariumRepository {
 
     override fun observeTanks(): Flow<List<Tank>> = combine(
@@ -69,6 +70,12 @@ class AquariumRepositoryImpl @Inject constructor(
     }
 
     override suspend fun buyFish(species: FishSpecies, tankId: Long): PurchaseResult {
+        // Defense in depth: the store disables locked cards, but the gate lives here.
+        val progression = progressionRepository.observeProgression().first()
+        if (progression.level < species.unlockLevel) {
+            return PurchaseResult.LevelTooLow(species.unlockLevel)
+        }
+
         val wallet = walletRepository.observeWallet().first()
         if (!wallet.canAfford(species.priceTokens)) return PurchaseResult.NotEnoughTokens
 

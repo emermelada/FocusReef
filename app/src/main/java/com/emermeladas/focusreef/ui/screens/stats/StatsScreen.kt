@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.emermeladas.focusreef.R
 import com.emermeladas.focusreef.ui.components.BreakdownRow
 import com.emermeladas.focusreef.ui.components.ColumnChart
+import com.emermeladas.focusreef.ui.components.LevelProgressRow
 import com.emermeladas.focusreef.ui.components.ColumnChartEntry
 import com.emermeladas.focusreef.utils.GameConfig
 import com.emermeladas.focusreef.utils.formatMinutes
@@ -79,6 +80,21 @@ fun StatsScreen(
         if (summary == null) {
             Text(stringResource(R.string.loading))
             return@Column
+        }
+
+        uiState.progression?.let { progression ->
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                LevelProgressRow(
+                    progression = progression,
+                    modifier = Modifier.padding(18.dp),
+                )
+            }
         }
 
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {

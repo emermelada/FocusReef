@@ -53,6 +53,13 @@
     <string name="store_msg_purchased">Purchase completed!</string>
     <string name="store_msg_not_enough_tokens">Not enough tokens</string>
     <string name="store_msg_no_space">No free slots — buy a new tank first</string>
+    <string name="store_msg_level_too_low">Keep your streak going to unlock this!</string>
+    <string name="store_locked_level">Unlocks at level %1$d</string>
+
+    <!-- Progression -->
+    <string name="level_label">Level %1$d</string>
+    <string name="streak_label">%1$d-day streak · x%2$s</string>
+    <string name="xp_progress">%1$d / %2$d XP</string>
 
     <!-- Shared -->
     <string name="loading">Loading…</string>

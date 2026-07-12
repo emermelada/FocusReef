@@ -63,10 +63,10 @@ fun FishSprite(
 
 /**
  * Placeholder canvas size per species — bigger fish take more slots and look
- * bigger in the tank.
+ * bigger in the tank. Keyed on slot size so new varieties need no sprite edits.
  */
-fun spriteSizeFor(species: FishSpecies): DpSize = when (species) {
-    FishSpecies.SMALL -> DpSize(30.dp, 18.dp)
-    FishSpecies.MEDIUM -> DpSize(46.dp, 28.dp)
-    FishSpecies.LARGE -> DpSize(64.dp, 40.dp)
+fun spriteSizeFor(species: FishSpecies): DpSize = when (species.slots) {
+    1 -> DpSize(30.dp, 18.dp)
+    3 -> DpSize(46.dp, 28.dp)
+    else -> DpSize(64.dp, 40.dp)
 }

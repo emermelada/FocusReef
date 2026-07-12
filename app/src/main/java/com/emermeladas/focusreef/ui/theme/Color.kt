@@ -131,7 +131,13 @@ val TokenGoldLight = Color(0xFFF7CC55)
  * encodes the species, so these hues are just flavor.
  */
 fun fishColorFor(species: FishSpecies): Color = when (species) {
-    FishSpecies.SMALL -> Color(0xFFF28C28)  // clownfish orange
-    FishSpecies.MEDIUM -> Color(0xFF2E9E6B) // reef green
-    FishSpecies.LARGE -> Color(0xFF7B68CD)  // deep-sea violet
+    FishSpecies.SMALL -> Color(0xFFF28C28)     // clownfish orange
+    FishSpecies.MEDIUM -> Color(0xFF2E9E6B)    // reef green
+    FishSpecies.LARGE -> Color(0xFF7B68CD)     // deep-sea violet
+    FishSpecies.NEON -> Color(0xFF35D0EE)      // electric cyan
+    FishSpecies.ANGELFISH -> Color(0xFFF2C230) // golden yellow
+    FishSpecies.BETTA -> Color(0xFFD64562)     // ruby
+    FishSpecies.SHARK -> Color(0xFF7E93A6)     // steel gray
+    FishSpecies.LIONFISH -> Color(0xFFC7502F)  // burnt coral
+    FishSpecies.ORCA -> Color(0xFF2E3A46)      // deep slate
 }
