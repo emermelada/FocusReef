@@ -1,5 +1,7 @@
 package com.emermeladas.focusreef.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.emermeladas.focusreef.data.model.DecorationSpecies
 import com.emermeladas.focusreef.data.model.FishSpecies
@@ -49,13 +51,15 @@ val LightInverseSurface = Color(0xFF2D3135)
 val LightInverseOnSurface = Color(0xFFEEF1F6)
 val LightInversePrimary = Color(0xFF85CFFF)
 
-val LightSurfaceDim = Color(0xFFD7DADF)
-val LightSurfaceBright = Color(0xFFF6FAFE)
+// Light containers keep a faint cool (ocean) tint rather than pure gray, so
+// the family reads as water even in daylight.
+val LightSurfaceDim = Color(0xFFD3DEE6)
+val LightSurfaceBright = Color(0xFFF4FAFE)
 val LightSurfaceContainerLowest = Color(0xFFFFFFFF)
-val LightSurfaceContainerLow = Color(0xFFF0F4F9)
-val LightSurfaceContainer = Color(0xFFEAEEF3)
-val LightSurfaceContainerHigh = Color(0xFFE4E9EE)
-val LightSurfaceContainerHighest = Color(0xFFDFE3E8)
+val LightSurfaceContainerLow = Color(0xFFEDF4F9)
+val LightSurfaceContainer = Color(0xFFE6EFF5)
+val LightSurfaceContainerHigh = Color(0xFFDEEAF1)
+val LightSurfaceContainerHighest = Color(0xFFD7E4EC)
 
 // ---- Dark scheme ------------------------------------------------------------
 
@@ -79,38 +83,97 @@ val DarkOnError = Color(0xFF690005)
 val DarkErrorContainer = Color(0xFF93000A)
 val DarkOnErrorContainer = Color(0xFFFFDAD6)
 
-val DarkBackground = Color(0xFF101417)
-val DarkOnBackground = Color(0xFFDFE3E7)
-val DarkSurface = Color(0xFF101417)
-val DarkOnSurface = Color(0xFFDFE3E7)
-val DarkSurfaceVariant = Color(0xFF41474D)
-val DarkOnSurfaceVariant = Color(0xFFC1C7CE)
+// The dark neutrals are deliberately NOT neutral: every surface step carries
+// a deep desaturated teal/navy undertone (B > G > R) so panels read as
+// lighter panes of the same water, never as stock Material gray.
+val DarkBackground = Color(0xFF081319)
+val DarkOnBackground = Color(0xFFDCE7EE)
+val DarkSurface = Color(0xFF081319)
+val DarkOnSurface = Color(0xFFDCE7EE)
+val DarkSurfaceVariant = Color(0xFF334955)
+val DarkOnSurfaceVariant = Color(0xFFA6BCC9)
 
-val DarkOutline = Color(0xFF8B9198)
-val DarkOutlineVariant = Color(0xFF41474D)
+val DarkOutline = Color(0xFF6E8794)
+val DarkOutlineVariant = Color(0xFF31454F)
 
-val DarkInverseSurface = Color(0xFFDFE3E7)
-val DarkInverseOnSurface = Color(0xFF2D3135)
+val DarkInverseSurface = Color(0xFFDCE7EE)
+val DarkInverseOnSurface = Color(0xFF15272F)
 val DarkInversePrimary = Color(0xFF00658E)
 
-val DarkSurfaceDim = Color(0xFF101417)
-val DarkSurfaceBright = Color(0xFF363A3E)
-val DarkSurfaceContainerLowest = Color(0xFF0B0F12)
-val DarkSurfaceContainerLow = Color(0xFF181C20)
-val DarkSurfaceContainer = Color(0xFF1C2024)
-val DarkSurfaceContainerHigh = Color(0xFF262A2E)
-val DarkSurfaceContainerHighest = Color(0xFF313539)
+val DarkSurfaceDim = Color(0xFF081319)
+val DarkSurfaceBright = Color(0xFF274451)
+val DarkSurfaceContainerLowest = Color(0xFF040D12)
+val DarkSurfaceContainerLow = Color(0xFF0F2029)
+val DarkSurfaceContainer = Color(0xFF132833)
+val DarkSurfaceContainerHigh = Color(0xFF1B3542)
+val DarkSurfaceContainerHighest = Color(0xFF244251)
 
-// ---- Tank water (used by TankSprite, not part of the Material scheme) ------
+// ---- Tank water & sand (used by TankSprite, not part of the Material scheme)
 
-/** Water surface (top of the tank gradient). */
-val WaterTop = Color(0xFF4FB3E8)
+/**
+ * The colors that make one theme's water: three vertical gradient stops plus
+ * the sand floor. Light theme reads as a sunlit lagoon; dark theme as the
+ * same reef after sundown — deeper and moodier, not merely inverted.
+ */
+data class TankPalette(
+    /** Water at the surface (top gradient stop). */
+    val surface: Color,
+    /** Mid-depth water (middle gradient stop). */
+    val mid: Color,
+    /** Deep water at the floor (bottom gradient stop). */
+    val deep: Color,
+    /** Sand floor base color. */
+    val sand: Color,
+)
 
-/** Deep water (bottom of the tank gradient). */
-val WaterBottom = Color(0xFF08476C)
+/** Daylight water: bright surface falling to a clear deep blue. */
+val LightTankPalette = TankPalette(
+    surface = Color(0xFF56BEEF),
+    mid = Color(0xFF1E7CB0),
+    deep = Color(0xFF0A4568),
+    sand = Color(0xFFE3CE97),
+)
 
-/** Sand strip at the bottom of the tank. */
-val TankSand = Color(0xFFE3CE97)
+/** Night water: the deep-ocean mood — dimmer surface, near-black depths. */
+val DarkTankPalette = TankPalette(
+    surface = Color(0xFF2E7FB2),
+    mid = Color(0xFF104A70),
+    deep = Color(0xFF03202F),
+    sand = Color(0xFFC2A975),
+)
+
+/** The [TankPalette] for the current theme. */
+@Composable
+fun tankPalette(): TankPalette =
+    if (isSystemInDarkTheme()) DarkTankPalette else LightTankPalette
+
+/**
+ * Dialog scrim: deep water instead of Material's flat black, so even the
+ * backdrop behind a dialog belongs to the reef. Applied with alpha at the
+ * call site; the blue-black base works over both themes.
+ */
+val ReefScrim = Color(0xFF03202F)
+
+// ---- Accent, edges, and depth (used by ReefSurface / the button system) ----
+
+/**
+ * The one saturated call-to-action color — a bright aqua that pops against
+ * the teal surfaces. Reserved for the single PRIMARY action on a surface
+ * (Buy, confirm); never used as a fill for passive chrome.
+ */
+val ReefAccent = Color(0xFF2FD6C4)
+
+/** High-contrast content drawn on top of [ReefAccent]. */
+val OnReefAccent = Color(0xFF00382F)
+
+/** Top edge of an elevated pane's hairline border (light catches the rim). */
+val HairlineTop = Color(0x2EFFFFFF)
+
+/** Bottom edge of the hairline border (fades toward the shadow). */
+val HairlineBottom = Color(0x0FFFFFFF)
+
+/** Tinted ambient shadow beneath elevated panes — deep water, not black. */
+val ReefShadowColor = Color(0xFF02141D)
 
 // ---- Token coin (used by TokenIcon) -----------------------------------------
 

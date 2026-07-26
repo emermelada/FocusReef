@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -59,7 +60,16 @@ fun BreakdownRow(
                     .fillMaxWidth(fraction.coerceIn(0f, 1f))
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(4.dp))
-                    .background(MaterialTheme.colorScheme.primary),
+                    // Same "water fill" gradient as the capacity gauge and
+                    // chart bars, so every measure in the app fills alike.
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.75f),
+                                MaterialTheme.colorScheme.primary,
+                            ),
+                        ),
+                    ),
             )
         }
         Text(

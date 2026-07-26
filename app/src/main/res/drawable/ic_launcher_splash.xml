@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Splash-screen mark: the same fish silhouette as the launcher, tinted with
+    the theme's primary so it reads against the reef window background in both
+    light and dark (see @color/reef_splash_icon).
+
+    The Android 12+ splash API masks the icon to the inner two-thirds of the
+    canvas, so the fish is drawn at the same 66dp safe-zone scale the adaptive
+    icon uses.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108"
+    android:tint="@color/reef_splash_icon">
+
+    <!-- Body with the eye punched out. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M24,54 a19,13 0 1,0 38,0 a19,13 0 1,0 -38,0 M31,51 a3.2,3.2 0 1,0 6.4,0 a3.2,3.2 0 1,0 -6.4,0" />
+
+    <!-- Dorsal fin. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,42 L48,32 L52,42 Z" />
+
+    <!-- Tail. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,54 L74,44 L74,64 Z" />
+
+    <!-- Bubbles rising ahead of the fish. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,40 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,31 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0" />
+</vector>

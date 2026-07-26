@@ -3,17 +3,24 @@ package com.emermeladas.focusreef.ui.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.emermeladas.focusreef.data.model.DecorationSpecies
 import com.emermeladas.focusreef.ui.theme.TokenGold
 import com.emermeladas.focusreef.ui.theme.decorationColorFor
+import kotlin.math.PI
+import kotlin.math.sin
+import kotlin.random.Random
 
 /**
  * PLACEHOLDER SPRITE — the single point where decoration art is rendered.
@@ -25,9 +32,41 @@ import com.emermeladas.focusreef.ui.theme.decorationColorFor
 fun DecorationSprite(
     species: DecorationSpecies,
     modifier: Modifier = Modifier,
+    clock: State<Float>? = null,
 ) {
     val color = decorationColorFor(species)
-    Canvas(modifier = modifier.size(decorationSizeFor(species))) {
+    // Per-instance phase so identical species never move in lockstep.
+    val phase = remember { Random.nextFloat() * 2f * PI.toFloat() }
+    Canvas(
+        modifier = modifier
+            .size(decorationSizeFor(species))
+            .graphicsLayer {
+                // Ambient motion, only when the tank provides its clock
+                // (store cards and dialogs stay static): kelp sways from its
+                // roots, the jellyfish drifts and gently pulses its bell.
+                val t = clock?.value ?: return@graphicsLayer
+                when (species) {
+                    DecorationSpecies.KELP -> {
+                        transformOrigin = TransformOrigin(0.5f, 1f)
+                        rotationZ = sin(t * 0.8f + phase) * 4f
+                    }
+                    DecorationSpecies.JELLYFISH -> {
+                        translationY = sin(t * 0.5f + phase) * 4.dp.toPx()
+                        scaleY = 1f + 0.04f * sin(t * 1.6f + phase)
+                    }
+                    else -> Unit
+                }
+            },
+    ) {
+        // Floor decorations cast a soft contact shadow so they sit ON the
+        // sand instead of floating in front of it.
+        if (species.isFloorDecoration()) {
+            drawOval(
+                color = Color.Black.copy(alpha = 0.18f),
+                topLeft = Offset(size.width * 0.02f, size.height * 0.90f),
+                size = Size(size.width * 0.96f, size.height * 0.12f),
+            )
+        }
         when (species) {
             DecorationSpecies.SHELL -> drawShell(color)
             DecorationSpecies.ROCK -> drawRock(color)
@@ -36,6 +75,39 @@ fun DecorationSprite(
             DecorationSpecies.TREASURE_CHEST -> drawChest(color)
             DecorationSpecies.JELLYFISH -> drawJellyfish(color)
         }
+        // A live bubbler releases a rising stream on top of its static art.
+        if (species == DecorationSpecies.BUBBLER) {
+            clock?.let { drawBubblerStream(color, it.value) }
+        }
+    }
+}
+
+/** Decorations that rest on the sand (and therefore cast a contact shadow). */
+private fun DecorationSpecies.isFloorDecoration(): Boolean = when (this) {
+    DecorationSpecies.SHELL,
+    DecorationSpecies.ROCK,
+    DecorationSpecies.KELP,
+    DecorationSpecies.TREASURE_CHEST,
+    -> true
+
+    DecorationSpecies.BUBBLER,
+    DecorationSpecies.JELLYFISH,
+    -> false
+}
+
+/** Small bubbles rising from the bubbler's mouth, looping forever. */
+private fun DrawScope.drawBubblerStream(color: Color, time: Float) {
+    repeat(3) { i ->
+        val progress = ((time / (2.2f + i * 0.5f)) + i * 0.37f) % 1f
+        val alpha = (1f - progress) * 0.8f
+        drawCircle(
+            color = color.copy(alpha = color.alpha * alpha),
+            radius = size.width * (0.05f + 0.05f * progress),
+            center = Offset(
+                x = size.width * (0.5f + 0.18f * sin(progress * 9f + i)),
+                y = size.height * (0.30f - 0.34f * progress),
+            ),
+        )
     }
 }
 

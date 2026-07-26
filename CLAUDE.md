@@ -53,7 +53,9 @@ app/src/main/java/com/emermeladas/focusreef/
 │   ├── remote/         # NAS API: Retrofit service, DTOs, mock implementation
 │   ├── local/          # Room: database, DAOs, entities (owned fish, tanks, purchases)
 │   └── repositories/   # Repository interfaces + implementations
-├── di/                 # Hilt modules: NetworkModule, DatabaseModule, RepositoryModule
+├── di/                 # Hilt modules: DatabaseModule, RepositoryModule. There is no
+│                       # NetworkModule: the NAS address is a user setting, so Retrofit
+│                       # is built on demand by data/remote/NasClient, keyed on the URL.
 ├── ui/
 │   ├── screens/
 │   │   ├── tanks/      # TanksScreen, TanksViewModel, TanksUiState
@@ -110,7 +112,10 @@ Defined entirely in `ui/theme/` — change it there, never inline in screens.
 - **Color:** complete Material 3 tonal scheme (every role, light + dark) seeded from ocean blue `#00658E`; slate-blue secondary, coral tertiary. Non-scheme brand colors (tank water, sand, token gold, fish placeholders) also live in `Color.kt`. Dynamic color is deliberately disabled.
 - **Type:** two bundled variable fonts — **Sora** for display/headline/title, **Inter** for body/label — mapped over the full M3 scale in `Type.kt`.
 - **Shape:** rounded scale (6→28dp) in `Theme.kt`.
-- **Charts:** single-hue (primary) column bars, tap-to-reveal values, baseline hairline in outlineVariant — see `ui/components/ColumnChart.kt`.
+- **Charts:** single-hue (primary) column bars, baseline hairline in outlineVariant, a labelled gridline at the maximum, the peak's value always visible and tap to move the readout to any other bar — see `ui/components/ColumnChart.kt`.
+- **Adaptive layout:** grid column counts are resources, not constants —
+  `values/integers.xml` and `values-w600dp/integers.xml`. Screens read them with
+  `integerResource(...)` and contain no width arithmetic.
 - **Launcher icon:** adaptive vector (fish + waves) in `res/drawable/ic_launcher_*.xml`, consistent with the in-app sprite silhouette.
 
 ## Code Conventions

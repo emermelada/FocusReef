@@ -90,11 +90,11 @@ private val DarkColors = darkColorScheme(
  * turning everything into a pill.
  */
 private val FocusReefShapes = Shapes(
-    extraSmall = RoundedCornerShape(6.dp),
-    small = RoundedCornerShape(10.dp),
-    medium = RoundedCornerShape(14.dp),
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(16.dp),
     large = RoundedCornerShape(20.dp),
-    extraLarge = RoundedCornerShape(28.dp),
+    extraLarge = RoundedCornerShape(24.dp),
 )
 
 /**

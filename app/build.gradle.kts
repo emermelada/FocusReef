@@ -37,6 +37,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // Settings shows the app version; BuildConfig is where it lives.
+        buildConfig = true
     }
 }
 
@@ -52,6 +54,8 @@ dependencies {
 
     // AndroidX core + lifecycle
     implementation(libs.androidx.core.ktx)
+    // Backports the Android 12+ splash screen so cold start looks the same everywhere.
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -67,6 +71,9 @@ dependencies {
     // Local persistence (Room) — owned fish, tanks and the purchase ledger
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
+
+    // Small preferences (DataStore) — e.g. last-seen earned tokens
+    implementation(libs.androidx.datastore.preferences)
 
     // NAS REST API client (Retrofit) — real focus-block source once the NAS is ready
     implementation(libs.retrofit)

@@ -1,15 +1,14 @@
 package com.emermeladas.focusreef.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,9 +44,10 @@ fun TankDetailDialog(
         title = tank.name,
         onDismiss = onDismiss,
         buttons = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.tank_detail_close))
-            }
+            DialogAction(
+                text = stringResource(R.string.tank_detail_close),
+                onClick = onDismiss,
+            )
         },
     ) {
         Column {
@@ -64,7 +64,7 @@ fun TankDetailDialog(
             FishSpecies.entries.forEach { species ->
                 val count = counts[species] ?: return@forEach
                 DialogListRow(
-                    headline = species.displayName,
+                    headline = stringResource(species.displayNameRes),
                     supporting = stringResource(R.string.tank_species_count_short, count),
                     leading = {
                         // Fixed-size box so rows align across sprite sizes.
@@ -76,26 +76,23 @@ fun TankDetailDialog(
                         }
                     },
                     trailing = {
-                        TextButton(
+                        ReefSecondaryButton(
+                            text = stringResource(R.string.tank_detail_move),
                             onClick = { onMoveSpecies(species) },
                             enabled = canMoveSpecies(species),
-                        ) {
-                            Text(stringResource(R.string.tank_detail_move))
-                        }
+                        )
                     },
                 )
             }
 
             if (tank.decorations.isNotEmpty()) {
-                Text(
+                SectionLabel(
                     text = stringResource(R.string.tank_detail_decorations),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
                 )
                 tank.decorations.forEach { decoration ->
                     DialogListRow(
-                        headline = decoration.species.displayName,
+                        headline = stringResource(decoration.species.displayNameRes),
                         supporting = null,
                         leading = {
                             Box(
@@ -106,9 +103,10 @@ fun TankDetailDialog(
                             }
                         },
                         trailing = {
-                            TextButton(onClick = { onRepositionDecoration(decoration) }) {
-                                Text(stringResource(R.string.tank_decoration_move))
-                            }
+                            ReefSecondaryButton(
+                            text = stringResource(R.string.tank_decoration_move),
+                            onClick = { onRepositionDecoration(decoration) },
+                        )
                         },
                     )
                 }
@@ -129,14 +127,13 @@ private fun SlotUsageStrip(tank: Tank) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 4.dp),
         )
-        LinearProgressIndicator(
-            progress = {
-                if (tank.capacitySlots == 0) 0f
-                else tank.usedSlots.toFloat() / tank.capacitySlots
+        CapacityGauge(
+            fraction = if (tank.capacitySlots == 0) {
+                0f
+            } else {
+                tank.usedSlots.toFloat() / tank.capacitySlots
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp),
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

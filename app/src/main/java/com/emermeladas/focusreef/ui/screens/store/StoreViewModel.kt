@@ -14,12 +14,16 @@ import com.emermeladas.focusreef.data.repositories.WalletRepository
 import com.emermeladas.focusreef.utils.BiasPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -28,6 +32,7 @@ import kotlinx.coroutines.launch
  * Purchase outcomes surface as a one-shot message ([userMessageRes]) that the
  * screen shows in a snackbar and then acknowledges via [onMessageShown].
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class StoreViewModel @Inject constructor(
     private val aquariumRepository: AquariumRepository,
@@ -35,17 +40,44 @@ class StoreViewModel @Inject constructor(
     progressionRepository: ProgressionRepository,
 ) : ViewModel() {
 
-    val uiState: StateFlow<StoreUiState> = combine(
-        walletRepository.observeWallet(),
-        aquariumRepository.observeTanks(),
-        progressionRepository.observeProgression(),
-    ) { wallet, tanks, progression ->
-        StoreUiState(isLoading = false, wallet = wallet, tanks = tanks, progression = progression)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = StoreUiState(),
-    )
+    /** Bumped by [retry]; each new value re-subscribes to the sources. */
+    private val retryTrigger = MutableStateFlow(0)
+
+    val uiState: StateFlow<StoreUiState> = retryTrigger
+        .flatMapLatest {
+            combine(
+                walletRepository.observeWallet(),
+                aquariumRepository.observeTanks(),
+                progressionRepository.observeProgression(),
+            ) { wallet, tanks, progression ->
+                StoreUiState(
+                    isLoading = false,
+                    wallet = wallet,
+                    tanks = tanks,
+                    progression = progression,
+                )
+            }
+        }
+        // The balance is derived from NAS history, so the store can fail to
+        // load for exactly the same reason Stats can.
+        .catch {
+            emit(
+                StoreUiState(
+                    isLoading = false,
+                    errorRes = R.string.error_history_unavailable,
+                ),
+            )
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = StoreUiState(),
+        )
+
+    /** Re-runs the failed load after the player taps "Try again". */
+    fun retry() {
+        retryTrigger.update { it + 1 }
+    }
 
     private val _userMessageRes = MutableStateFlow<Int?>(null)
 

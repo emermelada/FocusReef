@@ -1,7 +1,7 @@
 package com.emermeladas.focusreef.data.repositories
 
 import com.emermeladas.focusreef.data.model.FocusBlock
-import com.emermeladas.focusreef.data.remote.NasApiService
+import com.emermeladas.focusreef.data.remote.NasClient
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -12,15 +12,15 @@ import kotlinx.coroutines.flow.flow
  *
  * NOT BOUND YET: [com.emermeladas.focusreef.di.RepositoryModule] currently
  * binds [MockFocusHistoryRepository]. Once the NAS API is deployed, swap the
- * binding there and point NetworkModule's base URL at the NAS — nothing else
- * in the app changes.
+ * binding there — the NAS address itself is no longer a code change, it is
+ * the field on the settings screen.
  */
 @Singleton
 class RemoteFocusHistoryRepository @Inject constructor(
-    private val api: NasApiService,
+    private val nasClient: NasClient,
 ) : FocusHistoryRepository {
 
     override fun observeFocusBlocks(): Flow<List<FocusBlock>> = flow {
-        emit(api.getFocusBlocks().map { it.toDomain() })
+        emit(nasClient.service().getFocusBlocks().map { it.toDomain() })
     }
 }

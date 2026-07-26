@@ -3,7 +3,6 @@ package com.emermeladas.focusreef.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,9 +33,10 @@ fun TankPickerDialog(
         title = title,
         onDismiss = onDismiss,
         buttons = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.picker_cancel))
-            }
+            DialogAction(
+                text = stringResource(R.string.picker_cancel),
+                onClick = onDismiss,
+            )
         },
     ) {
         Column {

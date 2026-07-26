@@ -1,0 +1,10 @@
+<resources>
+    <!-- Grid widths, as resources rather than constants, so the layout follows
+         the window instead of the device: a phone in landscape and a tablet in
+         portrait get the column count their width deserves, and the screens
+         themselves stay free of size arithmetic.
+
+         Phone portrait: one aquarium at a time, two store cards. -->
+    <integer name="tank_grid_columns">1</integer>
+    <integer name="store_grid_columns">2</integer>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <!-- 600dp and up: tablets, foldables, and phones turned sideways. A single
+         column here leaves an aquarium stretched over the full width with the
+         fish lost in the middle, and store cards wider than they are tall. -->
+    <integer name="tank_grid_columns">2</integer>
+    <integer name="store_grid_columns">3</integer>
+</resources>

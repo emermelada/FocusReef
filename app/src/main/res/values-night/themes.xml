@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Night variants. The parent switches to the dark platform theme so that
+    anything the framework draws for itself (dialog windows, the recents
+    thumbnail) is dark too; `windowBackground` resolves to the night color
+    automatically. See values/themes.xml for the full explanation.
+-->
+<resources>
+
+    <style name="Theme.FocusReef" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/reef_window_background</item>
+    </style>
+
+    <style name="Theme.FocusReef.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/reef_window_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.FocusReef</item>
+    </style>
+
+</resources>

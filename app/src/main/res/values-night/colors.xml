@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Night variants of the window-level colors. See values/colors.xml.
+-->
+<resources>
+    <!-- Matches DarkBackground (#081319) in ui/theme/Color.kt. -->
+    <color name="reef_window_background">#081319</color>
+
+    <!-- Matches DarkPrimary (#85CFFF); tints the splash icon. -->
+    <color name="reef_splash_icon">#85CFFF</color>
+</resources>

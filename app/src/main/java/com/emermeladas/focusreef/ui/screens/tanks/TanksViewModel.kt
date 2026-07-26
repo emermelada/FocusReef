@@ -10,12 +10,16 @@ import com.emermeladas.focusreef.data.repositories.AquariumRepository
 import com.emermeladas.focusreef.utils.BiasPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -25,18 +29,38 @@ import kotlinx.coroutines.launch
  * Move outcomes surface as a one-shot message ([userMessageRes]) shown in a
  * snackbar and acknowledged via [onMessageShown].
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TanksViewModel @Inject constructor(
     private val aquariumRepository: AquariumRepository,
 ) : ViewModel() {
 
-    val uiState: StateFlow<TanksUiState> = aquariumRepository.observeTanks()
+    /** Bumped by [retry]; each new value re-subscribes to the database. */
+    private val retryTrigger = MutableStateFlow(0)
+
+    val uiState: StateFlow<TanksUiState> = retryTrigger
+        .flatMapLatest { aquariumRepository.observeTanks() }
         .map { tanks -> TanksUiState(isLoading = false, tanks = tanks) }
+        // Room is local and rarely fails, but when it does the alternative is
+        // a skeleton that shimmers forever with no way to recover.
+        .catch {
+            emit(
+                TanksUiState(
+                    isLoading = false,
+                    errorRes = R.string.error_aquarium_unavailable,
+                ),
+            )
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = TanksUiState(),
         )
+
+    /** Re-runs the failed load after the player taps "Try again". */
+    fun retry() {
+        retryTrigger.update { it + 1 }
+    }
 
     private val _userMessageRes = MutableStateFlow<Int?>(null)
 

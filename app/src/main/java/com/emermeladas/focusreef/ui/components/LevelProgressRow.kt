@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,14 +47,17 @@ fun LevelProgressRow(
                 style = MaterialTheme.typography.labelLarge,
             )
         }
-        LinearProgressIndicator(
-            progress = {
-                if (progression.xpForNextLevel <= 0L) 0f
-                else progression.xpIntoLevel.toFloat() / progression.xpForNextLevel
+        // The same reef gauge the tank uses — one meter across the app, so
+        // XP and tank capacity read as one language (no ticks for XP).
+        CapacityGauge(
+            fraction = if (progression.xpForNextLevel <= 0L) {
+                0f
+            } else {
+                progression.xpIntoLevel.toFloat() / progression.xpForNextLevel
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp),
+            modifier = Modifier.fillMaxWidth(),
+            ticks = 0,
+            fillColor = LocalContentColor.current,
             trackColor = LocalContentColor.current.copy(alpha = 0.2f),
         )
         Text(

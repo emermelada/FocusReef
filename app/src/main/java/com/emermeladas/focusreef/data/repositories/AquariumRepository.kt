@@ -54,6 +54,16 @@ interface AquariumRepository {
 
     /** Moves a placed decoration to a new position inside its tank. */
     suspend fun updateDecorationPosition(decorationId: Long, xBias: Float, yBias: Float)
+
+    /**
+     * Empties the aquarium back to a single starter tank and clears the
+     * purchase ledger, refunding every token ever spent.
+     *
+     * The focus-block history is untouched — it belongs to the desk, not to
+     * the game, and the player's recorded hours are not theirs to delete from
+     * here. So this resets the *spending*, not the *earning*.
+     */
+    suspend fun resetAquarium()
 }
 
 /**
@@ -105,7 +115,10 @@ class AquariumRepositoryImpl @Inject constructor(
         // Fish + ledger entry must land together, or tokens could be lost.
         database.withTransaction {
             aquariumDao.insertFish(FishEntity(speciesName = species.name, tankId = targetTank.id))
-            purchaseDao.insert(purchaseOf(species.displayName, species.priceTokens))
+            // The ledger records the stable enum name, not the display name:
+            // a persisted receipt must not change meaning when the device
+            // language changes.
+            purchaseDao.insert(purchaseOf(species.name, species.priceTokens))
         }
         return PurchaseResult.Success
     }
@@ -171,7 +184,10 @@ class AquariumRepositoryImpl @Inject constructor(
                     yBias = defaultPosition.y,
                 ),
             )
-            purchaseDao.insert(purchaseOf(species.displayName, species.priceTokens))
+            // The ledger records the stable enum name, not the display name:
+            // a persisted receipt must not change meaning when the device
+            // language changes.
+            purchaseDao.insert(purchaseOf(species.name, species.priceTokens))
         }
         return DecorationPurchaseResult.Success(decorationId)
     }
@@ -187,6 +203,21 @@ class AquariumRepositoryImpl @Inject constructor(
         val species = DecorationSpecies.valueOf(entity.speciesName)
         val clamped = PlacementMath.clamp(BiasPoint(xBias, yBias), species.placement)
         aquariumDao.updateDecorationPosition(decorationId, clamped.x, clamped.y)
+    }
+
+    override suspend fun resetAquarium() {
+        // One transaction: a half-applied reset would either leave orphaned
+        // fish in deleted tanks or refund tokens for items still in the water.
+        database.withTransaction {
+            aquariumDao.deleteAllFish()
+            aquariumDao.deleteAllDecorations()
+            aquariumDao.deleteAllTanks()
+            purchaseDao.deleteAll()
+            // The starter tank is normally seeded by the database's onCreate
+            // callback, which will not run again — recreate it here so the
+            // player is not left with nowhere to put their first fish.
+            aquariumDao.insertTank(TankEntity(name = GameConfig.STARTER_TANK_NAME))
+        }
     }
 
     /** Builds a ledger entry timestamped now. */

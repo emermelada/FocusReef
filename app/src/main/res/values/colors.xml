@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Window-level colors — the only colors that must exist as Android resources
+    rather than in `ui/theme/Color.kt`, because the platform draws the launch
+    window before Compose is alive.
+
+    Keep these in sync with `LightBackground` / `DarkBackground` in Color.kt:
+    any drift shows up as a visible flash between the launch window and the
+    first composed frame.
+-->
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Matches LightBackground (#F6FAFE) in ui/theme/Color.kt. -->
+    <color name="reef_window_background">#F6FAFE</color>
+
+    <!-- Matches LightPrimary (#00658E); tints the splash icon. -->
+    <color name="reef_splash_icon">#00658E</color>
 </resources>

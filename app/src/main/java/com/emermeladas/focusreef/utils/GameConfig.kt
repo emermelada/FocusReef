@@ -125,4 +125,45 @@ object GameConfig {
 
     /** Total XP required to be level n is `LEVEL_XP_FACTOR * (n - 1)^2`. */
     const val LEVEL_XP_FACTOR: Long = 100L
+
+    // Presentation tuning (gameplay feel, not economy) -------------------------
+    // UI transition curves/durations live in ui/theme/Motion.kt; the numbers
+    // here shape how the *world* behaves and are meant to be balanced like
+    // the economy above.
+
+    /** Master switch for haptic feedback on meaningful actions (purchases). */
+    const val HAPTICS_ENABLED: Boolean = true
+
+    /** Ambient bubbles alive in a tank at once (independent of bubblers). */
+    const val TANK_AMBIENT_BUBBLE_COUNT: Int = 5
+
+    /** Fastest full bottom-to-surface rise of an ambient bubble, in ms. */
+    const val BUBBLE_RISE_MIN_MS: Int = 4_000
+
+    /** Slowest full bottom-to-surface rise of an ambient bubble, in ms. */
+    const val BUBBLE_RISE_MAX_MS: Int = 9_000
+
+    /** Shortest time a fish spends swimming one leg of its wander, in ms. */
+    const val FISH_SWIM_MIN_MS: Int = 2_500
+
+    /** Random extra swim time added per leg, in ms. */
+    const val FISH_SWIM_JITTER_MS: Int = 3_500
+
+    /**
+     * Extra swim time per slot the species occupies, in ms — bigger fish
+     * cross the tank slower, reading as heavier and more deliberate.
+     */
+    const val FISH_SWIM_PER_SLOT_MS: Int = 700
+
+    /** Shortest hover between swim legs, in ms. */
+    const val FISH_HOVER_MIN_MS: Int = 400
+
+    /** Random extra hover time, in ms. */
+    const val FISH_HOVER_JITTER_MS: Int = 2_200
+
+    /** How long the "you earned N tokens" welcome-back moment stays up, in ms. */
+    const val EARNINGS_MOMENT_MS: Int = 3_600
+
+    /** How long a quiet toast (purchase/move feedback) stays up, in ms. */
+    const val TOAST_HOLD_MS: Int = 2_800
 }

@@ -27,6 +27,8 @@ data class StatsSummary(
     val allTimeMinutes: Long,
     /** The last 7 days including today, oldest first, zero-filled. */
     val lastSevenDays: List<DayStat>,
+    /** Day 1 up to today of the current month, zero-filled. */
+    val daysOfThisMonth: List<DayStat>,
     /** January up to the current month of this year, zero-filled. */
     val monthsOfThisYear: List<MonthStat>,
     /** Every year with recorded activity, oldest first. */
@@ -62,6 +64,14 @@ object StatsAggregator {
             DayStat(date = day, minutes = minutesPerDay[day] ?: 0L)
         }
 
+        // The month so far, day by day. Stops at today rather than running to
+        // the end of the month: trailing zeroes for days that have not
+        // happened yet read as failure, not as future.
+        val daysOfThisMonth = (1..today.dayOfMonth).map { dayNumber ->
+            val day = today.withDayOfMonth(dayNumber)
+            DayStat(date = day, minutes = minutesPerDay[day] ?: 0L)
+        }
+
         val monthsOfThisYear = (1..today.monthValue).map { monthNumber ->
             val month = YearMonth.of(today.year, monthNumber)
             MonthStat(
@@ -90,6 +100,7 @@ object StatsAggregator {
                 .values.sum(),
             allTimeMinutes = minutesPerDay.values.sum(),
             lastSevenDays = lastSevenDays,
+            daysOfThisMonth = daysOfThisMonth,
             monthsOfThisYear = monthsOfThisYear,
             perYear = perYear,
         )

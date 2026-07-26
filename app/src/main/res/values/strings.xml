@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">FocusReef</string>
+    <!-- The product name. Not translated, in any locale. -->
+    <string name="app_name" translatable="false">FocusReef</string>
 
     <!-- Bottom navigation -->
     <string name="tab_tanks">Tanks</string>
@@ -9,15 +10,18 @@
     <!-- Tanks screen -->
     <string name="tanks_title">My aquarium</string>
     <string name="tank_slots_used">%1$d/%2$d slots</string>
-    <string name="tanks_empty_hint">Your tank is empty. Complete focus blocks to earn tokens and buy fish in the store!</string>
 
     <!-- Stats screen -->
     <string name="stats_title">Focus stats</string>
     <string name="stats_this_week">This week</string>
     <string name="stats_this_month">This month</string>
+    <string name="stats_tab_month">Month</string>
     <string name="stats_this_year">This year</string>
     <string name="stats_all_time">All time</string>
-    <string name="stats_focus_blocks">%1$d focus blocks</string>
+    <plurals name="stats_focus_blocks">
+        <item quantity="one">%1$d focus block</item>
+        <item quantity="other">%1$d focus blocks</item>
+    </plurals>
     <string name="stats_tab_week">Week</string>
     <string name="stats_tab_year">Year</string>
     <string name="stats_tab_all_time">All time</string>
@@ -26,11 +30,14 @@
     <string name="stats_chart_years">Year by year</string>
 
     <!-- Tank detail dialog -->
+    <string name="tank_open_details">Open tank details</string>
     <string name="tank_detail_close">Close</string>
     <string name="tank_detail_empty">No fish in this tank yet</string>
     <string name="tank_detail_move">Move</string>
-    <string name="tank_species_count">%1$s × %2$d</string>
-    <string name="tank_free_slots">%1$d free slots</string>
+    <plurals name="tank_free_slots">
+        <item quantity="one">%1$d free slot</item>
+        <item quantity="other">%1$d free slots</item>
+    </plurals>
     <string name="move_fish_title">Move to which tank?</string>
     <string name="tank_msg_moved">Fish moved!</string>
     <string name="tank_msg_move_no_space">Not enough free slots in that tank</string>
@@ -40,21 +47,73 @@
     <!-- Store screen -->
     <string name="store_title">Fish store</string>
     <string name="store_choose_tank">Where should it live?</string>
-    <string name="store_balance">%1$d tokens</string>
+    <plurals name="store_balance">
+        <item quantity="one">%1$d token</item>
+        <item quantity="other">%1$d tokens</item>
+    </plurals>
     <string name="store_balance_label">Your balance</string>
-    <string name="store_price">%1$d tokens</string>
-    <string name="store_slots">%1$d slot</string>
-    <string name="store_slots_plural">%1$d slots</string>
+    <!-- How much tank room a fish takes up. A real plural, not a hand-rolled
+         if/else on n == 1: the two-form English rule is not every language's. -->
+    <plurals name="store_slots">
+        <item quantity="one">%1$d slot</item>
+        <item quantity="other">%1$d slots</item>
+    </plurals>
     <string name="store_buy">Buy</string>
     <string name="store_section_fish">Fish</string>
     <string name="store_section_tanks">Tanks</string>
     <string name="store_item_tank">New tank</string>
-    <string name="store_item_tank_description">Adds a tank with %1$d fresh fish slots</string>
+    <plurals name="store_item_tank_description">
+        <item quantity="one">Adds a tank with %1$d fresh fish slot</item>
+        <item quantity="other">Adds a tank with %1$d fresh fish slots</item>
+    </plurals>
     <string name="store_msg_purchased">Purchase completed!</string>
     <string name="store_msg_not_enough_tokens">Not enough tokens</string>
     <string name="store_msg_no_space">No free slots — buy a new tank first</string>
     <string name="store_msg_level_too_low">Keep your streak going to unlock this!</string>
+    <!-- Fish names. SMALL/MEDIUM/LARGE are the three starter species; their
+         enum constants stay size-based because Room persists them, but the
+         player should meet a clownfish, not a "Small fish". -->
+    <string name="fish_name_small">Clownfish</string>
+    <string name="fish_name_medium">Blue tang</string>
+    <string name="fish_name_large">Grouper</string>
+    <string name="fish_name_neon">Neon tetra</string>
+    <string name="fish_name_angelfish">Angelfish</string>
+    <string name="fish_name_betta">Betta</string>
+    <string name="fish_name_shark">Reef shark</string>
+    <string name="fish_name_lionfish">Lionfish</string>
+    <string name="fish_name_orca">Orca</string>
+
+    <!-- Decoration names. -->
+    <string name="decoration_name_shell">Seashell</string>
+    <string name="decoration_name_rock">Rock</string>
+    <string name="decoration_name_kelp">Kelp plant</string>
+    <string name="decoration_name_bubbler">Bubbler</string>
+    <string name="decoration_name_treasure_chest">Treasure chest</string>
+    <string name="decoration_name_jellyfish">Jellyfish</string>
+
+    <string name="stats_chart_days_of_month">This month, day by day</string>
+
+    <!-- First run. The player has an empty tank and no idea where fish come
+         from; this is the only place the earn-and-spend loop is explained. -->
+    <string name="tanks_empty_title">Your reef is waiting</string>
+    <string name="tanks_empty_body">Every %1$d-minute focus block your desk records earns you 1 token. Spend tokens in the Store on fish and decorations — your reef grows as your focus does.</string>
+
+    <!-- Why a Buy button is disabled. The level gate is on the button itself. -->
+    <string name="store_reason_need_more">%1$d more to go</string>
+    <string name="store_reason_no_room">No room in your tanks</string>
+
+    <!-- Failure states. -->
+    <string name="error_title">Can\'t reach your desk</string>
+    <string name="error_history_unavailable">Your focus history lives on the NAS, and it isn\'t answering right now. Your aquarium is safe — it\'s stored on this device.</string>
+    <string name="error_aquarium_unavailable">Your aquarium couldn\'t be opened. Try again in a moment.</string>
+    <string name="action_retry">Try again</string>
+
+    <!-- Shelf holding everything the player has not unlocked yet. -->
+    <string name="store_section_coming_up">Coming up</string>
     <string name="store_locked_level">Unlocks at level %1$d</string>
+    <!-- Same meaning as store_locked_level, sized for a grid card's button;
+         the full sentence is what screen readers announce for the padlock. -->
+    <string name="store_locked_short">Level %1$d</string>
     <string name="tank_species_count_short">× %1$d</string>
 
     <!-- Decorations -->
@@ -62,7 +121,12 @@
     <string name="store_decoration_floor">Sits on the sand</string>
     <string name="store_decoration_floating">Floats in the water</string>
     <string name="store_choose_tank_decoration">Where should it go?</string>
-    <string name="store_msg_decoration_limit">That tank already has 6 decorations</string>
+    <!-- Deliberately no number. This said "already has 6 decorations" while
+         the real cap is a GameConfig constant, so rebalancing the game made
+         the app lie. Toast messages carry no format arguments, so the fix is
+         to state the fact rather than the figure — the exact count is on the
+         tank's own "n/6 decorations" label anyway. -->
+    <string name="store_msg_decoration_limit">That tank has no room left for decorations</string>
     <string name="placement_title">Place your %1$s</string>
     <string name="placement_hint_floor">Drag left or right — floor items sit on the sand</string>
     <string name="placement_hint_floating">Drag anywhere in the water — floating items never touch the sand</string>
@@ -77,6 +141,56 @@
     <string name="streak_label">%1$d-day streak · x%2$s</string>
     <string name="xp_progress">%1$d / %2$d XP</string>
 
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_open">Settings</string>
+
+    <string name="settings_section_desk">Your desk</string>
+    <string name="settings_nas_label">NAS address</string>
+    <!-- A sample address, shown greyed out in the field. There is nothing in
+         it to translate. -->
+    <string name="settings_nas_placeholder" translatable="false">http://192.168.1.20:8080/api/</string>
+    <string name="settings_nas_explainer">Where your desk stores its focus blocks. Your aquarium is kept on this device and is not affected by this setting.</string>
+    <string name="settings_nas_save">Save</string>
+    <string name="settings_nas_test">Test connection</string>
+    <string name="settings_nas_saved">Address saved</string>
+    <plurals name="settings_nas_test_ok">
+        <item quantity="one">Connected — %1$d focus block on record</item>
+        <item quantity="other">Connected — %1$d focus blocks on record</item>
+    </plurals>
+    <string name="settings_nas_test_empty">Enter an address first</string>
+    <string name="settings_nas_test_invalid">That doesn\'t look like a web address</string>
+    <string name="settings_nas_test_unreachable">No answer from that address. Check the NAS is awake and you\'re on the same network.</string>
+
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_theme_label">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_reduce_motion_label">Still reef</string>
+    <string name="settings_reduce_motion_explainer">Stops the fish, bubbles and light from moving. Turned on automatically when your device asks for reduced animation or battery saver is on.</string>
+
+    <string name="settings_section_about">About</string>
+    <string name="settings_version">Version %1$s</string>
+
+    <!-- The one destructive action in the app. -->
+    <string name="settings_section_danger">Start over</string>
+    <string name="settings_reset_label">Empty the aquarium</string>
+    <string name="settings_reset_explainer">Removes every fish, decoration and extra tank, and refunds every token you\'ve spent. Your focus history is recorded by your desk and stays untouched.</string>
+    <string name="settings_reset_action">Empty it</string>
+    <string name="settings_reset_confirm_title">Empty the aquarium?</string>
+    <string name="settings_reset_confirm_body">Every fish and decoration you\'ve bought will be gone. You\'ll get all your tokens back, so you can build it again from scratch.</string>
+    <string name="settings_reset_cancel">Keep my reef</string>
+    <string name="settings_reset_done">Aquarium emptied — your tokens are back</string>
+
     <!-- Shared -->
     <string name="loading">Loading…</string>
+
+    <!-- Welcome-back earnings moment -->
+    <plurals name="earnings_moment_title">
+        <item quantity="one">You earned %d token</item>
+        <item quantity="other">You earned %d tokens</item>
+    </plurals>
+    <string name="earnings_moment_subtitle">Focused work, banked for the reef.</string>
+    <string name="earnings_moment_dismiss">Dismiss</string>
 </resources>

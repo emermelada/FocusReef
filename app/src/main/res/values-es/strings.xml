@@ -1,0 +1,193 @@
+<resources>
+    <!-- Spanish. Kept in the same order as values/strings.xml so the two can
+         be diffed side by side when a string is added.
+
+         app_name and settings_nas_placeholder are absent on purpose: a product
+         name and a sample IP address have nothing to translate, so they are
+         marked translatable="false" in the English file. -->
+
+    <!-- Bottom navigation -->
+    <string name="tab_tanks">Acuarios</string>
+    <string name="tab_stats">Progreso</string>
+    <string name="tab_store">Tienda</string>
+
+    <!-- Tanks screen -->
+    <string name="tanks_title">Mi acuario</string>
+    <string name="tank_slots_used">%1$d/%2$d plazas</string>
+
+    <!-- Stats screen -->
+    <string name="stats_title">Tu concentración</string>
+    <string name="stats_this_week">Esta semana</string>
+    <string name="stats_this_month">Este mes</string>
+    <string name="stats_tab_month">Mes</string>
+    <string name="stats_this_year">Este año</string>
+    <string name="stats_all_time">Histórico</string>
+    <plurals name="stats_focus_blocks">
+        <item quantity="one">%1$d bloque de concentración</item>
+        <item quantity="other">%1$d bloques de concentración</item>
+        <item quantity="many">%1$d de bloques de concentración</item>
+    </plurals>
+    <string name="stats_tab_week">Semana</string>
+    <string name="stats_tab_year">Año</string>
+    <string name="stats_tab_all_time">Histórico</string>
+    <string name="stats_chart_last_7_days">Últimos 7 días</string>
+    <string name="stats_chart_months">Mes a mes</string>
+    <string name="stats_chart_years">Año a año</string>
+
+    <!-- Tank detail dialog -->
+    <string name="tank_open_details">Abrir detalles del acuario</string>
+    <string name="tank_detail_close">Cerrar</string>
+    <string name="tank_detail_empty">Todavía no hay peces en este acuario</string>
+    <string name="tank_detail_move">Mover</string>
+    <plurals name="tank_free_slots">
+        <item quantity="one">%1$d plaza libre</item>
+        <item quantity="other">%1$d plazas libres</item>
+        <item quantity="many">%1$d de plazas libres</item>
+    </plurals>
+    <string name="move_fish_title">¿A qué acuario?</string>
+    <string name="tank_msg_moved">¡Pez trasladado!</string>
+    <string name="tank_msg_move_no_space">No hay plazas libres en ese acuario</string>
+    <string name="tank_msg_nothing_to_move">Ese pez ya no está ahí</string>
+    <string name="picker_cancel">Cancelar</string>
+
+    <!-- Store screen -->
+    <string name="store_title">Tienda de peces</string>
+    <string name="store_choose_tank">¿Dónde va a vivir?</string>
+    <plurals name="store_balance">
+        <item quantity="one">%1$d ficha</item>
+        <item quantity="other">%1$d fichas</item>
+        <item quantity="many">%1$d de fichas</item>
+    </plurals>
+    <string name="store_balance_label">Tu saldo</string>
+    <plurals name="store_slots">
+        <item quantity="one">%1$d plaza</item>
+        <item quantity="other">%1$d plazas</item>
+        <item quantity="many">%1$d de plazas</item>
+    </plurals>
+    <string name="store_buy">Comprar</string>
+    <string name="store_section_fish">Peces</string>
+    <string name="store_section_tanks">Acuarios</string>
+    <string name="store_item_tank">Acuario nuevo</string>
+    <plurals name="store_item_tank_description">
+        <item quantity="one">Añade un acuario con %1$d plaza libre</item>
+        <item quantity="other">Añade un acuario con %1$d plazas libres</item>
+        <item quantity="many">Añade un acuario con %1$d de plazas libres</item>
+    </plurals>
+    <string name="store_msg_purchased">¡Compra realizada!</string>
+    <string name="store_msg_not_enough_tokens">No tienes fichas suficientes</string>
+    <string name="store_msg_no_space">No quedan plazas — compra otro acuario</string>
+    <string name="store_msg_level_too_low">¡Mantén la racha para desbloquearlo!</string>
+
+    <!-- Fish names -->
+    <string name="fish_name_small">Pez payaso</string>
+    <string name="fish_name_medium">Pez cirujano azul</string>
+    <string name="fish_name_large">Mero</string>
+    <string name="fish_name_neon">Neón tetra</string>
+    <string name="fish_name_angelfish">Pez ángel</string>
+    <string name="fish_name_betta">Betta</string>
+    <string name="fish_name_shark">Tiburón de arrecife</string>
+    <string name="fish_name_lionfish">Pez león</string>
+    <string name="fish_name_orca">Orca</string>
+
+    <!-- Decoration names -->
+    <string name="decoration_name_shell">Concha</string>
+    <string name="decoration_name_rock">Roca</string>
+    <string name="decoration_name_kelp">Alga</string>
+    <string name="decoration_name_bubbler">Difusor de burbujas</string>
+    <string name="decoration_name_treasure_chest">Cofre del tesoro</string>
+    <string name="decoration_name_jellyfish">Medusa</string>
+
+    <string name="stats_chart_days_of_month">Este mes, día a día</string>
+
+    <!-- First run -->
+    <string name="tanks_empty_title">Tu arrecife te espera</string>
+    <string name="tanks_empty_body">Cada bloque de %1$d minutos que registra tu escritorio te da 1 ficha. Gasta las fichas en la Tienda en peces y decoración — tu arrecife crece con tu concentración.</string>
+
+    <!-- Why a Buy button is disabled -->
+    <string name="store_reason_need_more">Te faltan %1$d</string>
+    <string name="store_reason_no_room">No queda sitio en tus acuarios</string>
+
+    <!-- Failure states -->
+    <string name="error_title">No se puede contactar con tu escritorio</string>
+    <string name="error_history_unavailable">Tu historial de concentración está en el NAS y ahora mismo no responde. Tu acuario está a salvo — se guarda en este dispositivo.</string>
+    <string name="error_aquarium_unavailable">No se ha podido abrir tu acuario. Inténtalo de nuevo en un momento.</string>
+    <string name="action_retry">Reintentar</string>
+
+    <!-- Locked shelf -->
+    <string name="store_section_coming_up">Próximamente</string>
+    <string name="store_locked_level">Se desbloquea en el nivel %1$d</string>
+    <string name="store_locked_short">Nivel %1$d</string>
+    <string name="tank_species_count_short">× %1$d</string>
+
+    <!-- Decorations -->
+    <string name="store_section_decorations">Decoración</string>
+    <string name="store_decoration_floor">Se apoya en la arena</string>
+    <string name="store_decoration_floating">Flota en el agua</string>
+    <string name="store_choose_tank_decoration">¿Dónde la ponemos?</string>
+    <string name="store_msg_decoration_limit">Ese acuario no tiene sitio para más decoración</string>
+    <string name="placement_title">Coloca tu %1$s</string>
+    <string name="placement_hint_floor">Arrastra a izquierda o derecha — los objetos de suelo se apoyan en la arena</string>
+    <string name="placement_hint_floating">Arrastra por el agua — los objetos flotantes nunca tocan la arena</string>
+    <string name="placement_confirm">Colocar aquí</string>
+    <string name="placement_cancel">Dejarlo donde estaba</string>
+    <string name="tank_detail_decorations">Decoración</string>
+    <string name="tank_decoration_move">Mover</string>
+    <string name="tank_decoration_count">%1$d/%2$d objetos</string>
+
+    <!-- Progression -->
+    <string name="level_label">Nivel %1$d</string>
+    <string name="streak_label">Racha de %1$d días · x%2$s</string>
+    <string name="xp_progress">%1$d / %2$d PX</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_open">Ajustes</string>
+
+    <string name="settings_section_desk">Tu escritorio</string>
+    <string name="settings_nas_label">Dirección del NAS</string>
+    <string name="settings_nas_explainer">Donde tu escritorio guarda sus bloques de concentración. Tu acuario se guarda en este dispositivo y no se ve afectado por este ajuste.</string>
+    <string name="settings_nas_save">Guardar</string>
+    <string name="settings_nas_test">Probar conexión</string>
+    <string name="settings_nas_saved">Dirección guardada</string>
+    <plurals name="settings_nas_test_ok">
+        <item quantity="one">Conectado — %1$d bloque registrado</item>
+        <item quantity="other">Conectado — %1$d bloques registrados</item>
+        <item quantity="many">Conectado — %1$d de bloques registrados</item>
+    </plurals>
+    <string name="settings_nas_test_empty">Escribe primero una dirección</string>
+    <string name="settings_nas_test_invalid">Eso no parece una dirección web</string>
+    <string name="settings_nas_test_unreachable">Esa dirección no responde. Comprueba que el NAS esté encendido y que estés en la misma red.</string>
+
+    <string name="settings_section_appearance">Apariencia</string>
+    <string name="settings_theme_label">Tema</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_reduce_motion_label">Arrecife en calma</string>
+    <string name="settings_reduce_motion_explainer">Detiene el movimiento de los peces, las burbujas y la luz. Se activa solo si tu dispositivo pide reducir las animaciones o si está el ahorro de batería.</string>
+
+    <string name="settings_section_about">Acerca de</string>
+    <string name="settings_version">Versión %1$s</string>
+
+    <!-- The one destructive action in the app -->
+    <string name="settings_section_danger">Empezar de cero</string>
+    <string name="settings_reset_label">Vaciar el acuario</string>
+    <string name="settings_reset_explainer">Elimina todos los peces, la decoración y los acuarios extra, y te devuelve todas las fichas que has gastado. Tu historial de concentración lo registra tu escritorio y no se toca.</string>
+    <string name="settings_reset_action">Vaciarlo</string>
+    <string name="settings_reset_confirm_title">¿Vaciar el acuario?</string>
+    <string name="settings_reset_confirm_body">Desaparecerán todos los peces y la decoración que has comprado. Recuperarás todas tus fichas, así que podrás construirlo otra vez desde cero.</string>
+    <string name="settings_reset_cancel">Dejar mi arrecife</string>
+    <string name="settings_reset_done">Acuario vaciado — tienes tus fichas de vuelta</string>
+
+    <!-- Shared -->
+    <string name="loading">Cargando…</string>
+
+    <!-- Welcome-back earnings moment -->
+    <plurals name="earnings_moment_title">
+        <item quantity="one">Has ganado %d ficha</item>
+        <item quantity="other">Has ganado %d fichas</item>
+        <item quantity="many">Has ganado %d de fichas</item>
+    </plurals>
+    <string name="earnings_moment_subtitle">Trabajo concentrado, ingresado en el arrecife.</string>
+    <string name="earnings_moment_dismiss">Cerrar</string>
+</resources>

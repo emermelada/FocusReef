@@ -4,10 +4,8 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,15 +57,21 @@ fun DecorationPlacementOverlay(
     val itemHeightPx = with(density) { itemSize.height.toPx() }
 
     FocusReefDialog(
-        title = stringResource(R.string.placement_title, species.displayName),
+        title = stringResource(
+            R.string.placement_title,
+            stringResource(species.displayNameRes),
+        ),
         onDismiss = onCancel,
         buttons = {
-            TextButton(onClick = onCancel) {
-                Text(stringResource(R.string.placement_cancel))
-            }
-            Button(onClick = { onConfirm(position) }) {
-                Text(stringResource(R.string.placement_confirm))
-            }
+            DialogAction(
+                text = stringResource(R.string.placement_cancel),
+                onClick = onCancel,
+            )
+            DialogAction(
+                text = stringResource(R.string.placement_confirm),
+                onClick = { onConfirm(position) },
+                primary = true,
+            )
         },
     ) {
         Box(

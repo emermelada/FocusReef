@@ -49,4 +49,19 @@ interface AquariumDao {
     /** Moves a placed decoration to a new position inside its tank. */
     @Query("UPDATE decorations SET xBias = :xBias, yBias = :yBias WHERE id = :decorationId")
     suspend fun updateDecorationPosition(decorationId: Long, xBias: Float, yBias: Float)
+
+    /* --- Reset. Only used by the settings screen's "start over", which runs
+       all three inside one transaction with the ledger wipe. --- */
+
+    /** Removes every owned fish. */
+    @Query("DELETE FROM fish")
+    suspend fun deleteAllFish()
+
+    /** Removes every placed decoration. */
+    @Query("DELETE FROM decorations")
+    suspend fun deleteAllDecorations()
+
+    /** Removes every tank, including the starter one. */
+    @Query("DELETE FROM tanks")
+    suspend fun deleteAllTanks()
 }

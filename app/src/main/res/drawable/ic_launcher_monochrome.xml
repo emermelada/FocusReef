@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Monochrome launcher layer (Android 13+ themed icons).
+
+    The system tints every non-transparent pixel of this drawable with a single
+    color pulled from the user's wallpaper, so it MUST be a flat silhouette on
+    transparent — reusing the colored foreground here produces a muddy blob.
+
+    The eye is punched out as a hole (body + eye in one path with evenOdd)
+    rather than drawn in a second color, which is the only way to keep it
+    visible once everything is one tint.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Body with the eye punched out, so the eye survives the tint. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M24,54 a19,13 0 1,0 38,0 a19,13 0 1,0 -38,0 M31,51 a3.2,3.2 0 1,0 6.4,0 a3.2,3.2 0 1,0 -6.4,0" />
+
+    <!-- Dorsal fin. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,42 L48,32 L52,42 Z" />
+
+    <!-- Tail. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,54 L74,44 L74,64 Z" />
+
+    <!-- Bubbles rising ahead of the fish. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,40 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,31 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0" />
+</vector>
