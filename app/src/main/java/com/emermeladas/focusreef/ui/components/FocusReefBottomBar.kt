@@ -15,10 +15,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.emermeladas.focusreef.ui.navigation.FocusReefDestination
 import com.emermeladas.focusreef.ui.theme.ReefMotion
 
@@ -27,14 +23,18 @@ import com.emermeladas.focusreef.ui.theme.ReefMotion
  * reef: a low surface tone, a primary-tinted selection pill, and icons that
  * surface gently (a small rise + grow) when their tab is chosen.
  *
- * Uses the standard multi-backstack pattern: state of each tab is saved and
- * restored when switching, and reselecting a tab does not stack duplicates.
+ * The bar is a *view* of the tab pager rather than an owner of navigation: it
+ * reports taps and renders whichever page is current, so tapping and swiping
+ * can never disagree about which tab you are on.
+ *
+ * @param selected The tab currently showing.
+ * @param onSelect Invoked with the tapped tab; the caller moves the pager.
  */
 @Composable
-fun FocusReefBottomBar(navController: NavHostController) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = backStackEntry?.destination
-
+fun FocusReefBottomBar(
+    selected: FocusReefDestination,
+    onSelect: (FocusReefDestination) -> Unit,
+) {
     // A hairline "waterline" along the bar's top edge — the surface of the
     // water the reef glyphs sit under.
     val waterlineColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
@@ -50,30 +50,25 @@ fun FocusReefBottomBar(navController: NavHostController) {
         },
     ) {
         FocusReefDestination.entries.forEach { destination ->
-            val selected = currentDestination?.hierarchy
-                ?.any { it.route == destination.route } == true
+            val isSelected = destination == selected
 
             // The chosen tab's icon floats up toward the surface a touch.
             val lift by animateFloatAsState(
-                targetValue = if (selected) 1f else 0f,
+                targetValue = if (isSelected) 1f else 0f,
                 animationSpec = ReefMotion.gentleSpring(),
                 label = "tabLift",
             )
 
             NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
+                selected = isSelected,
+                onClick = { onSelect(destination) },
                 icon = {
                     Icon(
-                        imageVector = if (selected) destination.selectedIcon else destination.icon,
+                        imageVector = if (isSelected) {
+                            destination.selectedIcon
+                        } else {
+                            destination.icon
+                        },
                         contentDescription = stringResource(destination.labelRes),
                         modifier = Modifier.graphicsLayer {
                             translationY = -2.dp.toPx() * lift

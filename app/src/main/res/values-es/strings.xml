@@ -141,7 +141,9 @@
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
+    <string name="action_back">Atrás</string>
     <string name="settings_open">Ajustes</string>
+    <string name="settings_close">Cerrar ajustes</string>
 
     <string name="settings_section_desk">Tu escritorio</string>
     <string name="settings_nas_label">Dirección del NAS</string>

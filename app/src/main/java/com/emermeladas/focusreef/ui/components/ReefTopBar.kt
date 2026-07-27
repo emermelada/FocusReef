@@ -41,6 +41,8 @@ import androidx.compose.foundation.layout.WindowInsets as ComposeWindowInsets
  *
  * @param title The screen name.
  * @param scrollBehavior Supplied by [ReefScreenScaffold]; drives the scroll tint.
+ * @param navigationIcon Optional leading icon button — a way out of screens
+ *   that are visited rather than lived in (settings), empty on the tabs.
  * @param actions Optional trailing icon buttons.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +51,7 @@ fun ReefTopBar(
     title: String,
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier,
+    navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
@@ -64,6 +67,7 @@ fun ReefTopBar(
                 ReefWaveMark()
             }
         },
+        navigationIcon = navigationIcon,
         actions = actions,
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
@@ -114,6 +118,8 @@ private fun ReefWaveMark() {
  *
  * @param title Screen name shown in the bar.
  * @param outerPadding Padding from the app-level scaffold (the bottom bar).
+ * @param navigationIcon Optional leading icon button in the bar (e.g. a back
+ *   arrow for screens outside the bottom navigation).
  * @param actions Optional trailing icon buttons in the bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -122,6 +128,7 @@ fun ReefScreenScaffold(
     title: String,
     outerPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (contentPadding: PaddingValues) -> Unit,
 ) {
@@ -133,6 +140,7 @@ fun ReefScreenScaffold(
             ReefTopBar(
                 title = title,
                 scrollBehavior = scrollBehavior,
+                navigationIcon = navigationIcon,
                 actions = actions,
             )
         },

@@ -143,7 +143,9 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="action_back">Back</string>
     <string name="settings_open">Settings</string>
+    <string name="settings_close">Close settings</string>
 
     <string name="settings_section_desk">Your desk</string>
     <string name="settings_nas_label">NAS address</string>

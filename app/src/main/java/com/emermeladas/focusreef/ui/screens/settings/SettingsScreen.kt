@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.emermeladas.focusreef.R
+import com.emermeladas.focusreef.ui.components.BackAction
 import com.emermeladas.focusreef.ui.components.FocusReefDialog
 import com.emermeladas.focusreef.ui.components.ReefContentCard
 import com.emermeladas.focusreef.ui.components.ReefPrimaryButton
@@ -59,10 +60,14 @@ import com.emermeladas.focusreef.ui.theme.ThemeMode
  * destructive action, kept visually last and behind a confirmation.
  *
  * @param outerPadding insets from the app scaffold, spent as content padding.
+ * @param onClose leaves settings and returns to the tab underneath. Given a
+ *   visible arrow rather than relying on the Back gesture alone, which is
+ *   invisible and, on this screen, the only way out.
  */
 @Composable
 fun SettingsScreen(
     outerPadding: PaddingValues,
+    onClose: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,6 +77,12 @@ fun SettingsScreen(
     ReefScreenScaffold(
         title = stringResource(R.string.settings_title),
         outerPadding = outerPadding,
+        navigationIcon = {
+            BackAction(
+                onClick = onClose,
+                contentDescription = stringResource(R.string.settings_close),
+            )
+        },
     ) { contentPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
